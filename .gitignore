@@ -6,3 +6,4 @@ docker-compose.yml
 mongo/data
 
 /**/yarn-error.log
+scratch/**

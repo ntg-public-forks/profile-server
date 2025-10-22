@@ -25,6 +25,7 @@ const lock = require('../utils/lock');
 const unlock = require('../utils/unlock');
 
 const Template = require('../ODM/models').template;
+const Profile = require('../ODM/models').profile;
 
 const permissionStack = [
     mustBeLoggedIn,
@@ -33,9 +34,16 @@ const permissionStack = [
     deny,
 ];
 
+const createPermissionStack = [
+    mustBeLoggedIn,
+    getResource(Profile, 'profile', 'uuid'),
+    permissions(),
+    deny,
+];
+
 
 templates.get('/', controller.getTemplates);
-templates.post('/', controller.createTemplate);
+templates.post('/', ...createPermissionStack, controller.createTemplate);
 
 templates.delete('/link/:template', ...permissionStack, lock(true), controller.unlinkTemplate);
 

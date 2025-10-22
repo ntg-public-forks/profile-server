@@ -25,6 +25,7 @@ const lock = require('../utils/lock');
 const unlock = require('../utils/unlock');
 
 const Concept = require('../ODM/models').concept;
+const Profile = require('../ODM/models').profile;
 
 const permissionStack = [
     mustBeLoggedIn,
@@ -33,8 +34,15 @@ const permissionStack = [
     deny,
 ];
 
+const createPermissionStack = [
+    mustBeLoggedIn,
+    getResource(Profile, 'profile', 'uuid'),
+    permissions(),
+    deny,
+];
+
 concepts.get('/', controller.getConcepts);
-concepts.post('/', controller.createConcept);
+concepts.post('/', ...createPermissionStack, controller.createConcept);
 
 concepts.delete('/link/:concept', ...permissionStack, lock(true), controller.unlinkConceptReq);
 
