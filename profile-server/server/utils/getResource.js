@@ -24,6 +24,12 @@
  */
 module.exports = function getResource(Model, keyParam, modelKey = 'uuid', required = true, resourceKey = 'resource') {
     return async function (req, res, next) {
+
+        // console.prodLog(`Finding resource with ${modelKey}: ${req.params[keyParam]}`);
+        // console.prodLog(`Called With params: ${JSON.stringify(req.params)}`);
+        // console.prodLog(`Called With function arguments:: Model Name: ${Model.modelName}, KeyParam: ${keyParam}, ModelKey: ${modelKey}, Required: ${required}, ResourceKey: ${resourceKey}`);
+        // console.prodLog(`Seeking for resource with ${modelKey}: ${req.params[keyParam]}`);
+
         const resource = await Model.findOne({ [modelKey]: req.params[keyParam] });
         req[resourceKey] = resource;
         if (!required || resource) { next(); } else {
