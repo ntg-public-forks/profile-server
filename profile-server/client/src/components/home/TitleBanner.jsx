@@ -51,7 +51,7 @@ export default function TitleBanner() {
 
     return (<>
         <header className="usa-header usa-header--extended" id="title-banner">
-            <p style={{ color: "#25303E" }}>Profile Server</p>
+            <p style={{ color: "#25303E", margin: "0" }}>Profile Server</p>
             <div className="usa-navbar">
                 <div className="usa-logo" id="extended-logo">
                     <em className="usa-logo__text">
