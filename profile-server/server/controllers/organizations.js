@@ -204,9 +204,9 @@ exports.getOrganizationPublic = async function (req, res) {
             .populate({
                 path: 'profiles',
                 select: 'uuid updatedOn',
-                //  where: { currentPublishedVersion: { $exists: true } },
+                where: { currentPublishedVersion: { $exists: true } },
                 populate: [
-                    { path: 'currentDraftVersion', select: 'uuid name' },
+                    // { path: 'currentDraftVersion', select: 'uuid name' },
                     { path: 'currentPublishedVersion', select: 'uuid name isVerified' },
                 ],
             });
@@ -236,6 +236,10 @@ exports.getOrganizationPublic = async function (req, res) {
 
     if (organization.createdBy != null && organization.createdBy.publicizeName == false) {
         delete organization.createdBy.fullname;
+    }
+
+    if (organization.profiles != null && Array.isArray(organization.profiles)) {
+        organization.profiles = organization.profiles.filter(p => p.currentPublishedVersion != null);
     }
 
     res.send({
