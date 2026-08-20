@@ -16,7 +16,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Formik, Form } from 'formik';
-import history from '../../history';
+import { useNavigate } from 'react-router';
 
 import { Sequence, Step } from '../sequence';
 import DefinePattern from './DefinePattern';
@@ -27,6 +27,8 @@ import DeprecateButton from '../controls/deprecateButton';
 import DeleteButton from '../controls/DeleteButton';
 
 export default function CreateSinglePattern(props) {
+    const navigate = useNavigate();
+
     props.updateType && props.updateType();
     const { isPublished, root_url, onDelete } = props;
 
@@ -78,7 +80,7 @@ export default function CreateSinglePattern(props) {
     }
 
     function getCancelButton() {
-        return <CancelButton className="usa-button usa-button--unstyled margin-left-4" cancelAction={() => history.push(root_url)} preventDefault={true} />
+        return <CancelButton className="usa-button usa-button--unstyled margin-left-4" cancelAction={() => navigate(root_url)} preventDefault={true} />
     }
 
     return (<>
@@ -155,7 +157,7 @@ export default function CreateSinglePattern(props) {
                                 <button className="usa-button submit-button" type="submit" onClick={formprops.handleSubmit}>
                                     Save Changes
                                 </button>
-                                <CancelButton className="usa-button usa-button--unstyled" type="reset" cancelAction={() => history.push(root_url)} />
+                                <CancelButton className="usa-button usa-button--unstyled" type="reset" cancelAction={() => navigate(root_url)} />
                             </div>
                             <div className="grid-col-3">
                                 <div className="pin-right">

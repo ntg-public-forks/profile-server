@@ -15,7 +15,7 @@
 **************************************************************** */
 
 import React from 'react';
-import { Route, Redirect, useLocation } from 'react-router-dom';
+import { Route, Navigate, useLocation } from 'react-router';
 import { useSelector } from 'react-redux';
 
 export default function NotLoggedInRoute({ component, ...rest }) {
@@ -34,7 +34,7 @@ export default function NotLoggedInRoute({ component, ...rest }) {
         return <Route {...rest} render={() => children} />
     else
         return <Route {...rest} render={(props) => {
-            return < Redirect to={location.originurl || location} />
+            return < Navigate to={location.originurl || location} />
         }
         } />
 }

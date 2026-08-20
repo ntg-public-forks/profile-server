@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React from 'react';
-import { useHistory, useRouteMatch, Switch, Route, Redirect } from 'react-router-dom';
+import { useLocation, useResolvedPath, Routes, Route, Navigate } from 'react-router';
 
 import ChooseConceptType from './ChooseConceptType';
 import CreateSemanticallyRelatableConcept from './CreateSemanticallyRelatableConcept';
@@ -25,8 +25,8 @@ import ErrorPage from '../errors/ErrorPage';
 import Breadcrumb from '../controls/breadcrumbs';
 
 export default function CreateConcept({ rootUrl, onCancel, onCreate, importedConcept }) {
-    const history = useHistory();
-    const { url, path } = useRouteMatch();
+    const url = useResolvedPath("").pathname;
+    const path = useLocation().pathname;
 
     return (<>
         <div className="usa-layout-docs usa-layout-docs__main usa-prose margin-top-3">
@@ -34,27 +34,14 @@ export default function CreateConcept({ rootUrl, onCancel, onCreate, importedCon
                 <Breadcrumb breadcrumbs={[{ to: rootUrl, crumb: 'concepts' }]} />
                 <h2 className="site-page-title margin-y-05">Create New Concept</h2>
             </header>
-            <Switch>
-                <Route exact path={path}>
-                    <ChooseConceptType onCreate={onCreate} onCancel={onCancel} />
-                </Route>
-                <Route exact path={`${path}/Document`}>
-                    <CreateDocumentConcept onCreate={onCreate} onCancel={onCancel} importedConcept={importedConcept}/>
-                </Route>
-                <Route exact path={`${path}/Extension`}>
-                    <CreateExtensionConcept onCreate={onCreate} onCancel={onCancel} importedConcept={importedConcept}/>
-                </Route>
-                <Route exact path={`${path}/Activity`}>
-                    <CreateActivityConcept onCreate={onCreate} onCancel={onCancel} importedConcept={importedConcept}/>
-                </Route>
-                <Route exact path={`${path}/:conceptType(Verb|ActivityType|AttachmentUsageType)?`}>
-                    <CreateSemanticallyRelatableConcept onCreate={onCreate} onCancel={onCancel} importedConcept={importedConcept}/>
-                </Route>
-                <Route>
-                    <ErrorPage />
-                </Route>
-                <Redirect from="/" to="" />
-            </Switch>
+            <Routes>
+                <Route end path={path} element={<ChooseConceptType onCreate={onCreate} onCancel={onCancel} />}/>
+                <Route end path={`${path}/Document`} element={<CreateDocumentConcept onCreate={onCreate} onCancel={onCancel} importedConcept={importedConcept}/>}/>
+                <Route end path={`${path}/Extension`} element={<CreateExtensionConcept onCreate={onCreate} onCancel={onCancel} importedConcept={importedConcept}/>}/>
+                <Route end path={`${path}/Activity`} element={<CreateActivityConcept onCreate={onCreate} onCancel={onCancel} importedConcept={importedConcept}/>}/>
+                <Route end path={`${path}/:conceptType(Verb|ActivityType|AttachmentUsageType)?`} element={<CreateSemanticallyRelatableConcept onCreate={onCreate} onCancel={onCancel} importedConcept={importedConcept}/>}/>
+                <Route element={<ErrorPage />}/>
+            </Routes>
         </div>
     </>);
 }

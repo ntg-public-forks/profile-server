@@ -15,7 +15,7 @@
 **************************************************************** */
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 import { updateSelectedComponents, deselectComponent } from '../../actions/patterns';
 import Flyout from '../controls/flyout';

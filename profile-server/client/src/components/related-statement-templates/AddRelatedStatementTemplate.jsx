@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useState, useEffect } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router';
 import { useSelector, useDispatch } from "react-redux";
 
 import { searchTemplates, selectTemplateResult, deselectTemplateResult, clearTemplateResults, loadProfileTemplates, editTemplate } from "../../actions/templates";
@@ -35,7 +35,7 @@ import { ADDED, EDITED } from '../../actions/successAlert';
 export default function AddRelatedStatementTemplate({ isEditing, breadcrumbs }) {
     const { templatereftype } = useParams();
     const dispatch = useDispatch();
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const template = useSelector((state) => state.application.selectedTemplate);
     const templateResults = useSelector((state) => state.searchResults.templates)
@@ -91,9 +91,9 @@ export default function AddRelatedStatementTemplate({ isEditing, breadcrumbs }) 
 
     function returnToTemplate() {
         if (breadcrumbs) {
-            history.push(breadcrumbs[breadcrumbs.length - 1].to);
+            navigate(breadcrumbs[breadcrumbs.length - 1].to);
         } else
-            history.goBack();
+            navigate(-1);
     }
 
     function onViewDetailsClick(template) {

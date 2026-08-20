@@ -23,10 +23,16 @@ const validIRI = require('../schema/validIRI');
 // validate iris when they exist
 router.use(validate(validIRI));
 
+const auth = require('./auth');
+const passport = require('../controllers/auth').setupPassport();
+router.use(passport.initialize());
+router.use(passport.session());
+router.use('/auth', auth);
+
 const users = require('./users');
-require('../controllers/users').setupPassport();
-router.use(require('../controllers/users').passport.initialize());
-router.use(require('../controllers/users').passport.session());
+//require('../controllers/users').setupPassport();
+//router.use(require('../controllers/users').passport.initialize());
+//router.use(require('../controllers/users').passport.session());
 router.use('/user', users);
 
 const organizations = require('./organizations');

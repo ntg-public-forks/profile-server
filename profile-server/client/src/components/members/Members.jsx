@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useEffect } from 'react';
-import { Link, Route, Switch, useRouteMatch, useHistory, useParams, Redirect } from 'react-router-dom';
+import { Link, Route, Routes, useLocation, useResolvedPath, useNavigate, useParams, Navigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 
 
@@ -26,8 +26,9 @@ import AddMember from './AddMember';
 export default function Members({ isMember }) {
 
     const dispatch = useDispatch();
-    const history = useHistory();
-    const { path, url } = useRouteMatch();
+    const navigate = useNavigate();
+    const url = useResolvedPath("").pathname;
+    const path = useLocation().pathname;
     const { organizationId } = useParams();
 
     const organization = useSelector((state) => state.application.selectedOrganization);
@@ -46,8 +47,8 @@ export default function Members({ isMember }) {
     let knownMemberRequests = Array.isArray(organization.memberRequests) ? organization.memberRequests : [];
 
     return (
-        <Switch>
-            <Route exact path={path}>
+        <Routes>
+            <Route end path={path} element={<>
                 <div className="grid-row">
                     <div className="grid-col">
                         <h2>Members</h2>
@@ -65,21 +66,17 @@ export default function Members({ isMember }) {
                     </div>
                 </div>
                 <MemberTable isAdmin={isAdmin} members={[...knownMemberRequests, ...knownMembers]}></MemberTable>
-            </Route>
-            <Route exact path={`${path}/add`}>
-                {
-                    isMember && isAdmin ?
-                        <AddMember url={url} />
-                        : <Redirect to={url} />
-                }
-            </Route>
-            <Route exact path={`${path}/:userId/edit`}>
-                {
-                    isMember && isAdmin ?
-                        <AddMember url={url} />
-                        : <Redirect to={url} />
-                }
-            </Route>
-        </Switch>
+            </>}/>
+            <Route end path={`${path}/add`} element={
+                isMember && isAdmin ?
+                    <AddMember url={url} />
+                    : <Navigate to={url} />
+            }/>
+            <Route end path={`${path}/:userId/edit`} element={
+                isMember && isAdmin ?
+                    <AddMember url={url} />
+                    : <Navigate to={url} />
+            }/>
+        </Routes>
     );
 }

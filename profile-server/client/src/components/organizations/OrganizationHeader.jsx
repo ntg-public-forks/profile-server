@@ -14,19 +14,19 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useState } from 'react';
-import { NavLink, useHistory } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import AccountButton from "../../components/users/AccountButton"
 
 export default function OrganizationHeader({ organization, url, isMember, user, joinAction }) {
     let [searchString, setSearchString] = useState();
-    let history = useHistory();
+    let navigate = useNavigate();
 
     const userData = useSelector((state) => state.userData);
     const dispatch = useDispatch();
 
     function search(e) {
-        history.push({ pathname: "/search", state: { search: searchString } });
+        navigate({ pathname: "/search", state: { search: searchString } });
         e.preventDefault();
         setSearchString("");
         return false;
@@ -83,21 +83,21 @@ export default function OrganizationHeader({ organization, url, isMember, user, 
                                 </button>
                                 <ul id="basic-nav-section-admin1" className="usa-nav__submenu" hidden>
                                     <li className="usa-nav__submenu-item">
-                                        <NavLink exact to="/admin/users"
+                                        <NavLink end to="/admin/users"
                                             className="usa-link"
                                         >
                                             Manage Users
                                         </NavLink>
                                     </li>
                                     <li className="usa-nav__submenu-item">
-                                        <NavLink exact to="/admin/verification"
+                                        <NavLink end to="/admin/verification"
                                             className="usa-link"
                                         >
                                             Verify Profiles
                                         </NavLink>
                                     </li>
                                     <li className="usa-nav__submenu-item">
-                                        <NavLink exact to="/admin/analytics"
+                                        <NavLink end to="/admin/analytics"
                                             className="usa-link"
                                         >
                                             Analytics
@@ -121,7 +121,7 @@ export default function OrganizationHeader({ organization, url, isMember, user, 
                             <NavLink
                                 to={url}
                                 className="usa-nav__link"
-                                exact
+                                end
                                 activeClassName="usa-current">
                                 <span className="text-bold">{`Profiles (${profilecount(organization.profiles)})`}</span>
                             </NavLink>

@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router';
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 import ErrorValidation from '../controls/errorValidation';
@@ -29,18 +29,18 @@ var CryptoJS = require("crypto-js");
 export default function Login(props) {
     let dispatch = useDispatch();
     let userData = useSelector((store) => store.userData)
-    const history = useHistory();
+    const navigate = useNavigate();
     const location = useLocation();
     const [showPassword, setShowPassword] = useState(false);
 
     function forgotPassword() {
-        history.push('./forgotpassword')
+        navigate('./forgotpassword')
     }
     function createAccount() {
-        history.push('./create')
+        navigate('./create')
     }
     function goToResendPage() {
-        history.push('./resend')
+        navigate('./resend')
     }
 
     async function signIn(values) {

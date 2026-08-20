@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 export default function ProfileTableRow({ profile, site_url, isMember, onOptionalSingleSelect, forceShowDrafts }) {
     if (!isMember && profile && !profile.currentPublishedVersion) 

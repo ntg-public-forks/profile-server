@@ -17,17 +17,17 @@ import React from 'react';
 
 import CreateOrgForm from './CreateOrgForm';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import { editOrganization } from '../../actions/organizations'
 
 export default function EditOrganization({ organization, rootUrl }) {
     const dispatch = useDispatch();
-    const history = useHistory();
+    const navigate = useNavigate();
 
     function handleSubmit(values) {
         dispatch(editOrganization(values));
-        history.push(`${rootUrl}/about`);
+        navigate(`${rootUrl}/about`);
     }
 
     return (

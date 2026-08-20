@@ -14,7 +14,7 @@
  * limitations under the License.
  **************************************************************** */
  import React, { useEffect } from 'react';
- import { Switch, Route, NavLink, useParams, useRouteMatch } from 'react-router-dom';
+ import { Routes, Route, NavLink, useParams, useLocation, useResolvedPath } from 'react-router';
  import { useSelector, useDispatch } from 'react-redux';
  import Templates from '../components/templates/Templates';
  import Concepts from '../components/concepts/Concepts';
@@ -28,7 +28,8 @@
  
 
  export default function DeletedItemsPage(props) {
-    const { url, path } = useRouteMatch();
+    const url = useResolvedPath("").pathname;
+    const path = useLocation().pathname;
     const { organizationId, profileId, versionId } = useParams();
     const dispatch = useDispatch();
 
@@ -109,21 +110,21 @@
                                 </button>
                                 <ul id="basic-nav-section-admin1" className="usa-nav__submenu" hidden>
                                     <li className="usa-nav__submenu-item">
-                                        <NavLink exact to="/admin/users"
+                                        <NavLink end to="/admin/users"
                                             className="usa-link"
                                         >
                                             Manage Users
                                         </NavLink>
                                     </li>
                                     <li className="usa-nav__submenu-item">
-                                        <NavLink exact to="/admin/verification"
+                                        <NavLink end to="/admin/verification"
                                             className="usa-link"
                                         >
                                             Verify Profiles
                                         </NavLink>
                                     </li>
                                     <li className="usa-nav__submenu-item">
-                                        <NavLink exact to="/admin/analytics"
+                                        <NavLink end to="/admin/analytics"
                                             className="usa-link"
                                         >
                                             Analytics
@@ -136,7 +137,7 @@
                             <AccountButton controlIndex={1000}></AccountButton>
                         </li>
                         <li className={`usa-nav__primary-item `}>
-                            <NavLink exact
+                            <NavLink end
                                 to={`${url}`}
                                 className="usa-nav__link"
                                 activeClassName="usa-current">
@@ -192,23 +193,13 @@
         </header>
 
         <main id="main-content" className="grid-container padding-bottom-4">
-            <Switch>
-                <Route exact path={path}>
-                    <ProfileDetails isMember={false} isCurrentVersion={isCurrentVersion} />
-                </Route>
-                <Route path={`${path}/templates`} >
-                    <Templates isMember={false} isCurrentVersion={isCurrentVersion} isOrphan={true} />
-                </Route>
-                <Route path={`${path}/patterns`} >
-                    <Patterns isMember={false} isCurrentVersion={isCurrentVersion} isOrphan={true} />
-                </Route>
-                <Route path={`${path}/concepts`} >
-                    <Concepts isMember={false} isCurrentVersion={isCurrentVersion} isOrphan={true} />
-                </Route>
-                <Route>
-                    <ErrorPage />
-                </Route>
-            </Switch>
+            <Routes>
+                <Route end path={path} element={<ProfileDetails isMember={false} isCurrentVersion={isCurrentVersion} />}/>
+                <Route path={`${path}/templates`} element={<Templates isMember={false} isCurrentVersion={isCurrentVersion} isOrphan={true} />}/>
+                <Route path={`${path}/patterns`} element={<Patterns isMember={false} isCurrentVersion={isCurrentVersion} isOrphan={true} />}/>
+                <Route path={`${path}/concepts`} element={<Concepts isMember={false} isCurrentVersion={isCurrentVersion} isOrphan={true} />}/>
+                <Route element={<ErrorPage />}/>
+            </Routes>
         </main>
         </>
     );

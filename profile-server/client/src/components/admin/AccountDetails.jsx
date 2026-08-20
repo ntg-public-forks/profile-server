@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useState, useEffect } from 'react';
-import { useHistory, Link, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 
 import api from "../../api"

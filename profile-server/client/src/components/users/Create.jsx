@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useState, useRef } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router';
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 import ErrorValidation from '../controls/errorValidation';
@@ -29,7 +29,7 @@ const recaptchaRef = React.createRef();
 export default function CreateAccount(props) {
     let dispatch = useDispatch();
     let userData = useSelector((store) => store.userData)
-    const history = useHistory();
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
 
     async function createAccount(createRequest) {
@@ -37,7 +37,7 @@ export default function CreateAccount(props) {
     }
 
     function login() {
-        history.push('./login')
+        navigate('./login')
     }
 
     const initialValues = { 

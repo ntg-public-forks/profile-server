@@ -15,7 +15,7 @@
 **************************************************************** */
 
 import React, { useReducer, useRef, useEffect } from "react";
-import { useHistory, Redirect, useRouteMatch } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -74,7 +74,7 @@ export default function ProfileImport() {
   const { file, dragHover } = state;
 
   const hiddenFileInput = useRef(null);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const reduxDispatch = useDispatch();
   const uploading = useSelector(state => state.application.uploading);
@@ -128,7 +128,7 @@ export default function ProfileImport() {
 
     if(uploading === 1 && harvestError.length === 0) {
       reduxDispatch({type:'SET_UPLOADING_STATE' , payload: -1});
-      history.push('./queue');
+      navigate('./queue');
     }
   },[uploading, errors])
 

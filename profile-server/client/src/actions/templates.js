@@ -16,7 +16,7 @@
 import { added, created, edited, removed, deprecated } from './successAlert';
 import { ADDED, CREATED, EDITED, REMOVED, DEPRECATED } from './successAlert';
 import API from '../api';
-import history from '../history'
+import { useNavigate }  from 'react-router';
 import { selectProfileVersion, selectProfile } from './profiles';
 
 export const SELECT_TEMPLATE = 'SELECT_TEMPLATE';
@@ -142,7 +142,7 @@ export function createTemplate(template) {
 
             dispatch(created(template.name));
 
-            history.push(`../../${profileVersionId}/templates/${newTemplate.uuid}`);
+            useNavigate(`../../${profileVersionId}/templates/${newTemplate.uuid}`);
         } catch (err) {
             dispatch({
                 type: ERROR_CREATE_TEMPLATE,

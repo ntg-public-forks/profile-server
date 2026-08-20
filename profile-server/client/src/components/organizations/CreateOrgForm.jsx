@@ -16,7 +16,7 @@
 import React from 'react';
 import { Formik, Field } from 'formik';
 import * as Yup from 'yup';
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import ErrorValidation from '../controls/errorValidation';
 import CancelButton from '../controls/cancelButton';
@@ -24,7 +24,7 @@ import { isValidIRI } from '../fields/Iri';
 import ValidationControlledSubmitButton from '../controls/validationControlledSubmitButton';
 
 export default function CreateOrgForm({ initialValues, onSubmit }) {
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const formValidation = (values) => {
         const errors = {};
@@ -77,7 +77,7 @@ export default function CreateOrgForm({ initialValues, onSubmit }) {
                     </form>
                 </div>
                 <ValidationControlledSubmitButton errors={props.errors} className="usa-button submit-button" type="button" onClick={props.handleSubmit}>{initialValues ? 'Save Changes' : 'Create Working Group'}</ValidationControlledSubmitButton>
-                <CancelButton className="usa-button usa-button--unstyled" type="reset" cancelAction={() => history.goBack()} />
+                <CancelButton className="usa-button usa-button--unstyled" type="reset" cancelAction={() => navigate(-1)} />
             </>)}
         </Formik>
     );

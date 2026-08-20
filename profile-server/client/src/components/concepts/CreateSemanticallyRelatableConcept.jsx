@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React from 'react'
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { Formik, Field } from 'formik';
 import { useSelector } from 'react-redux';
 

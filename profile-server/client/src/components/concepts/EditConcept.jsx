@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React from 'react';
-import { useRouteMatch, Switch, Route, Redirect } from 'react-router-dom';
+import { useLocation, Routes, Route, Navigate } from 'react-router';
 
 // import ChooseConceptType from './ChooseConceptType';
 import CreateSemanticallyRelatableConcept from './CreateSemanticallyRelatableConcept';
@@ -24,26 +24,15 @@ import CreateActivityConcept from './CreateActivityConcept';
 import ErrorPage from '../errors/ErrorPage';
 
 export default function EditConcept({ initialValues, onCancel, onCreate, isPublished, setIsEditing, onDeprecate, onDelete }) {
-    const { path } = useRouteMatch();
+    const path = useLocation().pathname;
     setIsEditing(true);
     return (<>
-        <Switch>
-            <Route exact path={`${path}/document`}>
-                <CreateDocumentConcept initialValues={initialValues} onCreate={onCreate} onCancel={onCancel} isPublished={isPublished} onDeprecate={onDeprecate} onDelete={onDelete} />
-            </Route>
-            <Route exact path={`${path}/extension`}>
-                <CreateExtensionConcept initialValues={initialValues} onCreate={onCreate} onCancel={onCancel} isPublished={isPublished} onDeprecate={onDeprecate} onDelete={onDelete} />
-            </Route>
-            <Route exact path={`${path}/activity`}>
-                <CreateActivityConcept initialValues={initialValues} onCreate={onCreate} onCancel={onCancel} isPublished={isPublished} onDeprecate={onDeprecate} onDelete={onDelete} />
-            </Route>
-            <Route exact path={`${path}/:conceptType(Verb|ActivityType|AttachmentUsageType)?`}>
-                <CreateSemanticallyRelatableConcept startingValues={initialValues} onCreate={onCreate} onCancel={onCancel} isPublished={isPublished} onDeprecate={onDeprecate} onDelete={onDelete} />
-            </Route>
-            <Route>
-                <ErrorPage />
-            </Route>
-            <Redirect from="/" to="" />
-        </Switch>
+        <Routes>
+            <Route end path={`${path}/document`} element={<CreateDocumentConcept initialValues={initialValues} onCreate={onCreate} onCancel={onCancel} isPublished={isPublished} onDeprecate={onDeprecate} onDelete={onDelete} />}/>
+            <Route end path={`${path}/extension`} element={<CreateExtensionConcept initialValues={initialValues} onCreate={onCreate} onCancel={onCancel} isPublished={isPublished} onDeprecate={onDeprecate} onDelete={onDelete} />}/>
+            <Route end path={`${path}/activity`} element={<CreateActivityConcept initialValues={initialValues} onCreate={onCreate} onCancel={onCancel} isPublished={isPublished} onDeprecate={onDeprecate} onDelete={onDelete} />}/>
+            <Route end path={`${path}/:conceptType(Verb|ActivityType|AttachmentUsageType)?`} element={<CreateSemanticallyRelatableConcept startingValues={initialValues} onCreate={onCreate} onCancel={onCancel} isPublished={isPublished} onDeprecate={onDeprecate} onDelete={onDelete} />}/>
+            <Route element={<ErrorPage />}/>
+        </Routes>
     </>);
 }

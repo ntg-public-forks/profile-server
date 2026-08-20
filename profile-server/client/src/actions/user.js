@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import API from '../api';
-import history from '../history'
+import { useNavigate }  from 'react-router';
 import { batch } from 'react-redux';
 
 export const START_LOGIN = 'START_LOGIN';
@@ -154,10 +154,10 @@ export function login(loginRequest, redirectto) {
 
             let hasUsername = await checkUsernameStatus()(dispatch);
             if (hasUsername) {
-                history.push(redirectto.originurl || '/')
+                useNavigate(redirectto.originurl || '/')
             }
             else {
-                history.push(redirectto.originurl || '/user/username')
+                useNavigate(redirectto.originurl || '/user/username')
             }
 
             dispatch({
@@ -223,8 +223,8 @@ export function createAccount(createRequest) {
             type: FINISH_CREATE,
         });
 
-        // history.push('./login');
-        history.push('./validate');
+        // useNavigate('./login');
+        useNavigate('./validate');
     };
 }
 
@@ -268,7 +268,7 @@ export function resendValidation(values) {
             type: FINISH_VALIDATE,
         });
 
-        history.push('./validate');
+        useNavigate('./validate');
     };
 }
 
@@ -305,7 +305,7 @@ export function attemptValidation(values) {
 
         if (loggedIn) {
 
-            history.push('/')
+            useNavigate('/')
             dispatch({
                 type: FINISH_LOGIN,
             });
@@ -370,7 +370,7 @@ export function setUsername(setRequest) {
             type: FINISH_SET_USERNAME,
         });
 
-        history.push('/user/account')
+        useNavigate('/user/account')
     };
 }
 

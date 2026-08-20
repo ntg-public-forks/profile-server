@@ -15,7 +15,7 @@
 **************************************************************** */
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router';
 import debounce from 'debounce-promise';
 import { Autocomplete, TextField } from '@cmsgov/design-system';
 import { Formik } from 'formik';
@@ -30,7 +30,7 @@ import ModalBoxWithoutClose from '../controls/modalBoxWithoutClose';
 
 export default function AddMember({ url }) {
     const dispatch = useDispatch();
-    const history = useHistory();
+    const navigate = useNavigate();
     const location = useLocation();
 
     let member;
@@ -47,19 +47,19 @@ export default function AddMember({ url }) {
     const organization = useSelector((state) => state.application.selectedOrganization);
 
     function handleCancel() {
-        history.push(url);
+        navigate(url);
     }
 
     async function _removeMember() {
         await dispatch(removeMember(member.user.id))
         await dispatch(selectOrganization(organization.uuid));
-        history.push(url);
+        navigate(url);
     }
 
     async function _denyMember() {
         dispatch(denyMemberRequest(member.user.id));
         await dispatch(selectOrganization(organization.uuid));
-        history.push(url);
+        navigate(url);
     }
 
     const searchUsersDebounce = debounce(API.searchUsers.bind(API), 300);
@@ -95,7 +95,7 @@ export default function AddMember({ url }) {
                     else
                         await dispatch(addMember({ _id: values.user.id }, values.role));
                     await dispatch(selectOrganization(organization.uuid));
-                    history.push(url);
+                    navigate(url);
                 }}
             >
                 {(props, form) => (<>

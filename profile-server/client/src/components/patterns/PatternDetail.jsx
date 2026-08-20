@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useEffect } from 'react';
-import { useRouteMatch, useParams, useHistory, Link, Switch, Route, Redirect, NavLink } from 'react-router-dom';
+import { useLocation, useResolvedPath, useParams, useNavigate, Link, Routes, Route, Navigate, NavLink } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { Detail, Tags, Translations } from '../DetailComponents';
@@ -29,11 +29,12 @@ import ClaimButton from '../controls/ClaimButton';
 
 
 export default function PatternDetail({ isMember, isCurrentVersion, breadcrumbs, root_ur, isOrphan }) {
-    const { url, path } = useRouteMatch();
+    const url = useResolvedPath("").pathname;
+    const path = useLocation().pathname;
     const [isEditing, setIsEditing] = useState(false);
     const params = useParams();
     const dispatch = useDispatch();
-    const history = useHistory();
+    const navigate = useNavigate();
     let { patternId } = useParams();
     const profileVersion = useSelector(state => state.application.selectedProfileVersion);
     const { selectedOrganizationId, selectedProfileId,
@@ -49,8 +50,8 @@ export default function PatternDetail({ isMember, isCurrentVersion, breadcrumbs,
 
     function handleEditPattern(values, actualAction) {
         dispatch(editPattern(Object.assign({}, pattern, values), actualAction));
-        history.push(url);
-        // history.push(root_url);
+        navigate(url);
+        // navigate(root_url);
     }
 
     function onDeprecate(reasonInfo) {
@@ -59,7 +60,7 @@ export default function PatternDetail({ isMember, isCurrentVersion, breadcrumbs,
 
     async function handleOnDelete() {
         await dispatch(deletePattern(pattern));
-        history.push(`/organization/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}`);
+        navigate(`/organization/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}`);
     }
 
     function onDelete() {
@@ -68,7 +69,7 @@ export default function PatternDetail({ isMember, isCurrentVersion, breadcrumbs,
 
     async function onClaimPattern(profile) {
         await dispatch(claimPattern(selectedOrganizationId, profile._id, selectedProfileVersionId, patternId));
-        history.push(`/deleted-items/organization/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}`);
+        navigate(`/deleted-items/organization/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}`);
     }
 
     if (!pattern) return '';
@@ -112,35 +113,31 @@ export default function PatternDetail({ isMember, isCurrentVersion, breadcrumbs,
                 }
             </div>
         </div>
-        <Switch>
-            <Route path={`${path}/edit`}>
-                {!isLinkedFromExternalProfile && isEditable ?
-                    <Lock resourceUrl={`/org/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}/pattern/${pattern.uuid}`}>
-                        <EditPattern
-                            pattern={pattern}
-                            onEdit={handleEditPattern}
-                            onCancel={() => { history.push(url) }}
-                            root_url={url}
-                            isPublished={isPublished}
-                            setEditing={setIsEditing}
-                            onDeprecate={onDeprecate}
-                            onDelete={onDelete}
-                        />
-                    </Lock>
-                    : <Redirect to={url} />
-                }
-            </Route>
+        <Routes>
+            <Route path={`${path}/edit`} element={!isLinkedFromExternalProfile && isEditable ?
+                <Lock resourceUrl={`/org/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}/pattern/${pattern.uuid}`}>
+                    <EditPattern
+                        pattern={pattern}
+                        onEdit={handleEditPattern}
+                        onCancel={() => { history.push(url) }}
+                        root_url={url}
+                        isPublished={isPublished}
+                        setEditing={setIsEditing}
+                        onDeprecate={onDeprecate}
+                        onDelete={onDelete}
+                    />
+                </Lock>
+                : <Navigate to={url} />
+            }/>
 
-            <Route exact path={path}>
-                <PatternDetailHome
-                    pattern={pattern}
-                    setIsEditing={setIsEditing}
-                    isPublished={isPublished}
-                    isEditable={isEditable}
-                    isLinkedFromExternalProfile={isLinkedFromExternalProfile}
-                />
-            </Route>
-        </Switch>
+            <Route end path={path} element={<PatternDetailHome
+                pattern={pattern}
+                setIsEditing={setIsEditing}
+                isPublished={isPublished}
+                isEditable={isEditable}
+                isLinkedFromExternalProfile={isLinkedFromExternalProfile}
+            />}/>
+        </Routes>
     </>);
 }
 

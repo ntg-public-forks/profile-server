@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useEffect, useState } from 'react';
-import { Switch, Route, NavLink, matchPath, useRouteMatch } from 'react-router-dom';
+import { Routes, Route, NavLink, useLocation } from 'react-router';
 import Login from "../components/users/Login";
 import Create from "../components/users/Create";
 import AccountDetails from "../components/users/AccountDetails";
@@ -27,34 +27,18 @@ import ValidateEmail from '../components/users/ValidateEmail';
 import ResendValidationEmail from '../components/users/ResendValidationEmail';
 
 export default function Users(props) {
-    const match = useRouteMatch();
+    const path = useLocation().pathname;
 
     return <main id="main-content" className="grid-container  padding-bottom-4">
-        <Switch>
-            <NotLoggedInRoute path={`${match.path}/login`} {...props}>
-                <Login></Login>
-            </NotLoggedInRoute>
-            <NotLoggedInRoute path={`${match.path}/create`} {...props}>
-                <Create></Create>
-            </NotLoggedInRoute>
-            <PrivateRoute path={`${match.path}/username`} {...props}>
-                <SelectUsername></SelectUsername>
-            </PrivateRoute>
-            <PrivateRoute path={`${match.path}/account`} {...props}>
-                <AccountDetails></AccountDetails>
-            </PrivateRoute>
-            <NotLoggedInRoute path={`${match.path}/forgotpassword`} {...props}>
-                <RequestPasswordReset></RequestPasswordReset>
-            </NotLoggedInRoute>
-            <NotLoggedInRoute path={`${match.path}/resetpassword`} {...props}>
-                <ResetPassword></ResetPassword>
-            </NotLoggedInRoute>
-            <NotLoggedInRoute path={`${match.path}/validate`} {...props}>
-                <ValidateEmail></ValidateEmail>
-            </NotLoggedInRoute>
-            <NotLoggedInRoute path={`${match.path}/resend`} {...props}>
-                <ResendValidationEmail></ResendValidationEmail>
-            </NotLoggedInRoute>
-        </Switch>
+        <Routes>
+            <Route path={`${path}/login`} {...props} element={<NotLoggedInRoute><Login></Login></NotLoggedInRoute>}/>
+            <Route path={`${path}/create`} {...props} element={<NotLoggedInRoute><Create></Create></NotLoggedInRoute>}/>
+            <Route path={`${path}/username`} {...props} element={<PrivateRoute><SelectUsername></SelectUsername></PrivateRoute>}/>
+            <Route path={`${path}/account`} {...props} element={<PrivateRoute><AccountDetails></AccountDetails></PrivateRoute>}/>
+            <Route path={`${path}/forgotpassword`} {...props} element={<NotLoggedInRoute><RequestPasswordReset></RequestPasswordReset></NotLoggedInRoute>}/>
+            <Route path={`${path}/resetpassword`} {...props} element={<NotLoggedInRoute><ResetPassword></ResetPassword></NotLoggedInRoute>}/>
+            <Route path={`${path}/validate`} {...props} element={<NotLoggedInRoute><ValidateEmail></ValidateEmail></NotLoggedInRoute>}/>
+            <Route path={`${path}/resend`} {...props} element={<NotLoggedInRoute><ResendValidationEmail></ResendValidationEmail></NotLoggedInRoute>}/>
+        </Routes>
     </main>
 }

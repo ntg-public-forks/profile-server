@@ -14,7 +14,7 @@
  * limitations under the License.
  **************************************************************** */
 import React from "react";
-import { Route, Switch, useRouteMatch } from "react-router-dom";
+import { useLocation } from "react-router";
 import SideNav from "../components/api-info/util/SideNav";
 import GetProfile from "../components/api-info/GetProfile";
 import GettingStarted from "../components/api-info/GettingStarted";
@@ -27,7 +27,7 @@ import Validate from "../components/api-info/Validate";
 import SPARQL from "../components/api-info/SPARQL";
 
 export default function FAQPage(props) {
-  const { path } = useRouteMatch();
+    const path = useLocation().pathname;
 
   return (
     <div class>

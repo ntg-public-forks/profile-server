@@ -57,6 +57,10 @@ const userSchema = mongoose.Schema(
             default: uuid.v4,
             unique: true,
         },
+        authId: {
+            type: String,
+            unique: true,
+        },
         _modified: Number,
         _created: Number,
         type: {

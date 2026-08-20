@@ -16,7 +16,7 @@
 import React, { useState } from 'react';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
-import Truncate from 'react-truncate';
+import { Truncate } from '@re-dev/react-truncate';
 
 export function SearchSelectView({
     onSearchSubmit,

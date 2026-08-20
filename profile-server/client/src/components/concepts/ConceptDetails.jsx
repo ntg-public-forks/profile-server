@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useEffect } from 'react';
-import { useRouteMatch, useParams, Switch, Route, Link, useHistory, Redirect } from 'react-router-dom';
+import { useLocation, useResolvedPath, useParams, Routes, Route, Link, useNavigate, Navigate } from 'react-router';
 import { editConcept, loadProfileConcepts, selectConcept, removeConceptLink, deleteConcept, claimConcept } from "../../actions/concepts";
 import { Detail, Translations, } from '../DetailComponents';
 import { useSelector, useDispatch, } from 'react-redux';
@@ -31,10 +31,11 @@ import ClaimButton from '../controls/ClaimButton';
 
 
 export default function ConceptDetail({ isMember, isCurrentVersion, breadcrumbs, isOrphan }) {
-    const { url, path } = useRouteMatch();
+    const url = useResolvedPath("").pathname;
+    const path = useLocation().pathname;
     const params = useParams();
     const dispatch = useDispatch();
-    const history = useHistory();
+    const navigate = useNavigate();
     const [isEditing, setIsEditing] = useState(false);
     const { organizationId, profileId, versionId, conceptId } = useParams();
     const [showModal, setShowModal] = useState(false);
@@ -54,7 +55,7 @@ export default function ConceptDetail({ isMember, isCurrentVersion, breadcrumbs,
 
     async function handleEditConcept(editedConcept, actualAction) {
         await dispatch(editConcept(Object.assign({}, concept, editedConcept), actualAction));
-        history.push(url);
+        navigate(url);
     }
 
     function onDeprecate(reasonInfo) {
@@ -63,7 +64,7 @@ export default function ConceptDetail({ isMember, isCurrentVersion, breadcrumbs,
 
     async function handleDeleteConcept() {
         await dispatch(deleteConcept(params.organizationId, profileId, versionId, concept));
-        history.push(`/organization/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}`);
+        navigate(`/organization/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}`);
     }
 
     function onDelete() {
@@ -72,7 +73,7 @@ export default function ConceptDetail({ isMember, isCurrentVersion, breadcrumbs,
 
     async function onClaimConcept(profile, targetOrganizationId) {
         await dispatch(claimConcept(targetOrganizationId, profile._id, versionId, conceptId));
-        history.push(`/deleted-items/organization/${targetOrganizationId}/profile/${profile.uuid}/version/${selectedProfileVersionId}`);
+        navigate(`/deleted-items/organization/${targetOrganizationId}/profile/${profile.uuid}/version/${selectedProfileVersionId}`);
     }
 
     if (!concept) return '';
@@ -96,9 +97,9 @@ export default function ConceptDetail({ isMember, isCurrentVersion, breadcrumbs,
 
         setShowModal(false);
         if (breadcrumbs) {
-            history.push(breadcrumbs[breadcrumbs.length - 1].to);
+            navigate(breadcrumbs[breadcrumbs.length - 1].to);
         }
-        history.push(`/organization/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}/concepts`);
+        navigate(`/organization/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}/concepts`);
     }
 
     const belongsToAnotherProfile = !(selectedProfileVersion.concepts && selectedProfileVersion.concepts.includes(concept._id));
@@ -132,37 +133,33 @@ export default function ConceptDetail({ isMember, isCurrentVersion, breadcrumbs,
                 }
             </div>
         </div>
-        <Switch>
-            <Route path={`${path}/edit`}>
-                {(!belongsToAnotherProfile && isEditable) ?
-                    <Lock resourceUrl={`/org/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}/concept/${concept.uuid}`}>
-                        <EditConcept
-                            initialValues={concept}
-                            onCreate={handleEditConcept}
-                            onCancel={() => history.push(url)}
-                            isPublished={isPublished}
-                            setIsEditing={setIsEditing}
-                            onDeprecate={onDeprecate}
-                            onDelete={onDelete}
-                        />
-                    </Lock>
-                    : <Redirect to={url} />
-                }
-            </Route>
+        <Routes>
+            <Route path={`${path}/edit`} element={(!belongsToAnotherProfile && isEditable) ?
+                <Lock resourceUrl={`/org/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}/concept/${concept.uuid}`}>
+                    <EditConcept
+                        initialValues={concept}
+                        onCreate={handleEditConcept}
+                        onCancel={() => history.push(url)}
+                        isPublished={isPublished}
+                        setIsEditing={setIsEditing}
+                        onDeprecate={onDeprecate}
+                        onDelete={onDelete}
+                    />
+                </Lock>
+                : <Navigate to={url} />
+            }/>
 
-            <Route exact path={path}>
-                <ConceptDetailHome
-                    belongsToAnotherProfile={belongsToAnotherProfile}
-                    concept={concept}
-                    setIsEditing={setIsEditing}
-                    breadcrumbs={breadcrumbs}
-                    setShowModal={setShowModal}
-                    isPublished={isPublished}
-                    isEditable={isEditable}
-                    isEditing={isEditing}
-                />
-            </Route>
-        </Switch>
+            <Route end path={path} element={<ConceptDetailHome
+                belongsToAnotherProfile={belongsToAnotherProfile}
+                concept={concept}
+                setIsEditing={setIsEditing}
+                breadcrumbs={breadcrumbs}
+                setShowModal={setShowModal}
+                isPublished={isPublished}
+                isEditable={isEditable}
+                isEditing={isEditing}
+            />}/>
+        </Routes>
 
         <ModalBoxWithoutClose show={showModal}>
             <div className="grid-row">

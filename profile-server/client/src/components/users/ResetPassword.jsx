@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router';
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 import ErrorValidation from '../controls/errorValidation';
@@ -29,7 +29,7 @@ var CryptoJS = require("crypto-js");
 export default function ResetPassword(props) {
     let dispatch = useDispatch();
     let userData = useSelector((store) => store.userData)
-    const history = useHistory();
+    const navigate = useNavigate();
     const location = useLocation();
     const [showPassword, setShowPassword] = useState(false);
     const [errorType, setErrorType] = useState("user");
@@ -87,7 +87,7 @@ export default function ResetPassword(props) {
 
                         let res = await api.postJSON("/app/user/reset", values);
                         if (res.success) {
-                            history.push("/user/login")
+                            navigate("/user/login")
                         } else {
 
                             setError(res.message);

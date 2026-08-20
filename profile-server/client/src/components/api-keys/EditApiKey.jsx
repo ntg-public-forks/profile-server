@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 
 import CreateApiKeyForm from './CreateApiKeyForm';

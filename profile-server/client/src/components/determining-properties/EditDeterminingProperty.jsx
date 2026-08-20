@@ -15,7 +15,7 @@
 **************************************************************** */
 import React, { useEffect } from 'react';
 import { Formik, Form } from 'formik';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 
 import AddProperty from './AddProperty';
@@ -24,7 +24,7 @@ import { selectTemplate } from '../../actions/templates';
 export default function EditDeterminingProperty({ onDeterminingPropertyAdd }) {
 
     const { templateId, propertyType } = useParams();
-    const history = useHistory();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const oneConceptOnly = ['verb', 'objectActivityType'];
     const determiningProperties = useSelector(state => state.application.selectedDeterminingProperties);
@@ -51,7 +51,7 @@ export default function EditDeterminingProperty({ onDeterminingPropertyAdd }) {
                 <AddProperty
                     isEditing={true}
                     propertyType={determiningProperty.propertyType}
-                    setPreviousStep={() => history.goBack()}
+                    setPreviousStep={() => navigate(-1)}
                     isOneConceptOnly={oneConceptOnly.includes(determiningProperty.propertyType)}
                 />
             </Form>

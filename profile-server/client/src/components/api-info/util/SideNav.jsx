@@ -14,10 +14,11 @@
 * limitations under the License.
 **************************************************************** */
 import React from 'react';
-import { NavLink, useRouteMatch } from 'react-router-dom';
+import { NavLink, useResolvedPath } from 'react-router';
 
 export default function SideNav() {
-    const { url } = useRouteMatch();
+    const url = "/api-info";
+
     return (
         <div className="usa-layout-docs__sidenav desktop:grid-col-3">
             <nav aria-label="Secondary navigation" className="pin-left pin-y position-sticky">
@@ -25,7 +26,7 @@ export default function SideNav() {
                     <li className="usa-sidenav__item">
                         <NavLink
                             to={`${url}`}
-                            exact
+                            end
                             className="usa-nav__link"
                             activeClassName="usa-current">
                             Getting Started

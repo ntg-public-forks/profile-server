@@ -15,12 +15,12 @@
 **************************************************************** */
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useRouteMatch } from 'react-router-dom';
+import { useResolvedPath } from 'react-router';
 
 import ApiKeyTableRow from './ApiKeyTableRow';
 
 export default function ApiKeyTable({ apiKeys, onRemove }) {
-    const { url } = useRouteMatch()
+    const url = useResolvedPath("").pathname;
     const organization = useSelector((state) => state.application.selectedOrganization);
     if (!organization) return '';
     

@@ -15,7 +15,7 @@
 **************************************************************** */
 import React from "react";
 
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link, useResolvedPath } from "react-router";
 import { useSelector } from 'react-redux';
 
 import { IconContext } from "react-icons";
@@ -26,7 +26,7 @@ import copy from 'copy-to-clipboard';
 
 
 export default function ProfilePublishButton({ isMember, isAdmin, isCurrentVersion, verificationRequest, profileVersionState, profileVersionIsVerified, onPublish, onVerification, onExport, onCopyToClipBoard, onRevokeVerification }) {
-  const { url } = useRouteMatch();
+  const url = useResolvedPath("").pathname;
   const profileURL = useSelector((state) => state.application.selectedProfile.url);
 
   // copy profile url to clipboard

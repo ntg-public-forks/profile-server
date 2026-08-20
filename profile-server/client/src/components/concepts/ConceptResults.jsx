@@ -15,7 +15,7 @@
 **************************************************************** */
 import React from 'react';
 
-import Truncate from 'react-truncate';
+import { Truncate } from '@re-dev/react-truncate';
 export default function ConceptResults(props) {
     let handleClick = () => {
         props.buttonAction(props.concept)

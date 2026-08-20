@@ -14,11 +14,8 @@
 * limitations under the License.
 **************************************************************** */
 import API from '../api';
-import history from '../history'
 import { selectProfile, selectProfileVersion } from './profiles';
 import { created, deprecated, DEPRECATED, EDITED, edited } from './successAlert';
-
-
 
 export const SELECT_CONCEPT = 'SELECT_CONCEPT';
 export const START_GET_CONCEPT = 'START_GET_CONCEPT';

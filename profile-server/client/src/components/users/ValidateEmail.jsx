@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 import ErrorValidation from '../controls/errorValidation';
@@ -26,7 +26,7 @@ const recaptchaRef = React.createRef();
 
 export default function ValidateEmail(props) {
     let dispatch = useDispatch();
-    let history = useHistory();
+    let navigate = useNavigate();
     let userData = useSelector((store) => store.userData)
     const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -39,7 +39,7 @@ export default function ValidateEmail(props) {
     });
 
     function goToResend() {
-        history.push('./resend');
+        navigate('./resend');
     }
 
     function attemptValidation(values) {

@@ -15,13 +15,13 @@
 **************************************************************** */
 import React from 'react';
 import { useState } from 'react';
-import { useRouteMatch, Link, useHistory } from 'react-router-dom'
+import { useResolvedPath, Link, useNavigate } from 'react-router'
 import CancelButton from '../controls/cancelButton';
 
 export default function PatternTypes() {
     let [type, updateType] = useState("");
-    const { url } = useRouteMatch();
-    const history = useHistory()
+    const url = useResolvedPath("").pathname;
+    const navigate = useNavigate()
 
     return (
         <>
@@ -117,6 +117,6 @@ export default function PatternTypes() {
                 </fieldset>
             </form>
             <Link className="usa-button padding-x-3 margin-right-4" to={`${url}/${type}`}>Continue</Link>
-            <CancelButton className="usa-button usa-button--unstyled" type="reset" cancelAction={() => history.push(url.replace("/create", ""))} />
+            <CancelButton className="usa-button usa-button--unstyled" type="reset" cancelAction={() => navigate(url.replace("/create", ""))} />
         </>);
 }

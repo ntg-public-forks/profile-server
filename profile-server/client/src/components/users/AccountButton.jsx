@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import * as user_actions from "../../actions/user";
 
@@ -37,14 +37,14 @@ export default function AccountButton({controlIndex = 0 }) {
             </button>
             <ul id={`basic-nav-section-two-${controlIndex}`} className="usa-nav__submenu" hidden>
                 <li className="usa-nav__submenu-item">
-                    <NavLink exact to="/user/account"
+                    <NavLink end to="/user/account"
                         className="usa-link"
                     >
                         My Account
                 </NavLink>
                 </li>
                 <li className="usa-nav__submenu-item">
-                    <NavLink exact to="/"
+                    <NavLink end to="/"
                         className="usa-link"
                         onClick={() => signOut()}
                     >
@@ -52,7 +52,7 @@ export default function AccountButton({controlIndex = 0 }) {
                 </NavLink>
                 </li>
                 <li className="usa-nav__submenu-item">
-                    <NavLink exact to="/user/hooks"
+                    <NavLink end to="/user/hooks"
                         className="usa-link"
 
                     >
@@ -60,7 +60,7 @@ export default function AccountButton({controlIndex = 0 }) {
                 </NavLink>
                 </li>
             </ul></> :
-            <NavLink exact to="/user/login"
+            <NavLink reloadDocument end to="/auth/login"
                 className="usa-nav__link"
                 activeClassName="usa-current"
             >

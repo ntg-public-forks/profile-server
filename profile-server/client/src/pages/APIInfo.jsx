@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router';
 import SideNav from '../components/api-info/util/SideNav';
 import GetProfile from '../components/api-info/GetProfile';
 import GettingStarted from '../components/api-info/GettingStarted';
@@ -28,8 +28,6 @@ import SPARQL from '../components/api-info/SPARQL';
 
 
 export default function APIInfo(props) {
-    const { path } = useRouteMatch();
-
     return (
         <div className="usa-section">
             <div className="grid-container">
@@ -40,35 +38,17 @@ export default function APIInfo(props) {
                     <SideNav />
 
                     <main className="usa-layout-docs__main desktop:grid-col-9 usa-prose usa-layout-docs" id="main-content">
-                        <Switch>
-                            <Route exact strict path={path}>
-                                <GettingStarted />
-                            </Route>
-                            <Route path={`${path}/post`}>
-                                <PostProfile />
-                            </Route>
-                            <Route path={`${path}/get`}>
-                                <GetProfile />
-                            </Route>
-                            <Route path={`${path}/put`}>
-                                <PutProfile />
-                            </Route>
-                            <Route path={`${path}/delete`}>
-                                <DeleteProfile />
-                            </Route>
-                            <Route path={`${path}/status`}>
-                                <Status />
-                            </Route>
-                            <Route path={`${path}/metadata`}>
-                                <Metadata />
-                            </Route>
-                            <Route path={`${path}/validate`}>
-                                <Validate />
-                            </Route>
-                            <Route path={`${path}/sparql`}>
-                                <SPARQL />
-                            </Route>
-                        </Switch>
+                        <Routes>
+                            <Route end strict path="/" element={<GettingStarted />}/>
+                            <Route path="/post" element={<PostProfile />}/>
+                            <Route path="/get/*" element={<GetProfile />}/>
+                            <Route path="/put" element={<PutProfile />}/>
+                            <Route path="/delete" element={<DeleteProfile />}/>
+                            <Route path="/status" element={<Status />}/>
+                            <Route path="/metadata" element={<Metadata />}/>
+                            <Route path="/validate" element={<Validate />}/>
+                            <Route path="/sparql" element={<SPARQL />}/>
+                        </Routes>
                     </main>
                 </div>
             </div>

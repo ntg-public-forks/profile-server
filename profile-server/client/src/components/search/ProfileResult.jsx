@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import Sparkline from "../controls/sparkline2";
 export default function ProfileResult({ result, openFlyout }) {
     const patterncount = (patterns) => {

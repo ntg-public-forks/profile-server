@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Detail, Translations } from '../DetailComponents';
 import ConceptTypeDetailExtension from '../concepts/ConceptTypeDetailExtension';
 import { selectInfopanelConcept } from '../../actions/concepts';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import DeprecatedAlert from '../controls/deprecatedAlert';
 
 export default function ConceptInfoPanel({ infoPanelConcept }) {

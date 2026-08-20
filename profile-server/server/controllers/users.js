@@ -18,6 +18,7 @@ const email = require('../utils/email.js');
 const Passport = require('passport');
 const passport = new Passport.Passport();
 const LocalStrategy = require('passport-local');
+const OpenIDConnectStrategy = require('passport-openidconnect');
 const hashPassword = require('../utils/hashPassword');
 const mongoSanitize = require('mongo-sanitize');
 const ValidationError = require("../errorTypes/validationError");
@@ -213,6 +214,8 @@ exports.setupPassport = function () {
 
     return passport;
 };
+
+// LOCAL
 
 function postLogoutCookie(req, res) {
     // totally destroy session on logout
@@ -426,6 +429,10 @@ exports.salt = function (req, res, next) {
 };
 
 exports.login = function (req, res, next) {
+    console.log(req, res, next);
+
+    passport.authenticate("openidconnect")
+    /*
     // ensureNotLoggedIn should prevent this
     if (req.user) {
         return res.status(200).send({
@@ -473,7 +480,7 @@ exports.login = function (req, res, next) {
                 success: true,
             });
         });
-    })(req, res, next);
+    })(req, res, next);*/
 };
 
 exports.validateEmail = function (req, res, next) {

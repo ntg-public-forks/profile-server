@@ -15,7 +15,7 @@
 **************************************************************** */
 
 import React from 'react';
-import { Route, Redirect, } from 'react-router-dom';
+import { Route } from 'react-router';
 import { useSelector } from 'react-redux';
 
 export default function AdminRoute({ component, ...rest }) {

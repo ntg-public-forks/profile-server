@@ -17,7 +17,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { Formik, useField } from 'formik';
 import * as Yup from 'yup';
-import Truncate from 'react-truncate';
+import { Truncate } from '@re-dev/react-truncate';
 
 import ModalBox from '../controls/modalBox';
 import { searchConcepts, clearConceptResults } from '../../actions/concepts';

@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useEffect } from 'react';
-import { Switch, Route, Link, useRouteMatch, useParams, useHistory } from 'react-router-dom';
+import { Routes, Route, Link, useLocation, useResolvedPath, useParams, useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { loadOrgWebHooks, createWebHook, editWebHook, deleteWebHook } from '../../actions/webhooks';
@@ -25,8 +25,9 @@ import EditWebHook from './EditWebHook';
 
 export default function WebHooks() {
     const dispatch = useDispatch();
-    const history = useHistory();
-    const { url, path } = useRouteMatch();
+    const navigate = useNavigate();
+    const url = useResolvedPath("").pathname;
+    const path = useLocation().pathname;
     const { organizationId } = useParams();
 
     useEffect(() => {
@@ -38,12 +39,12 @@ export default function WebHooks() {
     function handleCreateSubmit(values) {
       
         dispatch(createWebHook(values));
-        history.push(url);
+        navigate(url);
     }
 
     function handleEditSubmit(values) {
         dispatch(editWebHook(Object.assign({}, values)));
-        history.push(url);
+        navigate(url);
     }
 
     function handleRemove(hookID) {
@@ -52,8 +53,8 @@ export default function WebHooks() {
 
     return (
         <main id="main-content" className={" grid-container  padding-bottom-4"}>
-        <Switch>
-            <Route exact path={path}>
+        <Routes>
+            <Route end path={path} element={<>
                 <div className="grid-row">
                     <div className="grid-col">
                         <h2>Webhooks</h2>
@@ -70,22 +71,18 @@ export default function WebHooks() {
                     </div>
                 </div>
                 <WebHookTable webHooks={webHooks} onRemove={handleRemove} />
-            </Route>
-            <Route exact path={`${path}/create`}>
-                <div className="usa-layout-docs usa-layout-docs__main desktop:grid-col-9 usa-prose">
-                    <header>
-                        <h2 className="site-page-title">Create WebHook</h2>
-                    </header>
-                    <p className="site-text-intro">
-                        Instructions if needed...
-                    </p>
-                    <CreateWebHookForm onSubmit={handleCreateSubmit} onCancel={() => history.goBack()}/>
-                </div>
-            </Route>
-            <Route exact path={`${path}/:hookId/edit`}>
-                <EditWebHook onSubmit={handleEditSubmit} onCancel={() => history.goBack()} />
-            </Route>
-        </Switch>
+            </>}/>
+            <Route end path={`${path}/create`} element={<div className="usa-layout-docs usa-layout-docs__main desktop:grid-col-9 usa-prose">
+                <header>
+                    <h2 className="site-page-title">Create WebHook</h2>
+                </header>
+                <p className="site-text-intro">
+                    Instructions if needed...
+                </p>
+                <CreateWebHookForm onSubmit={handleCreateSubmit} onCancel={() => navigate(-1)}/>
+            </div>}/>
+            <Route end path={`${path}/:hookId/edit`} element={<EditWebHook onSubmit={handleEditSubmit} onCancel={() => navigate(-1)} />}/>
+        </Routes>
         </main>
     )
 }

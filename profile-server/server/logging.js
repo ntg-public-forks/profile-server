@@ -20,9 +20,11 @@ console._log1 = console.log.bind(console);
 const colors = require('colors');
 const isPrimitive = require('is-primitive');
 
+
+
 console.log = function(...args) {
     args = args.map(i => {
-        if (i && util.isError(i)) { return colors.red.inverse(i.message) + '\n' + colors.red(i.stack); }
+        if (i && i instanceof Error) { return colors.red.inverse(i.message) + '\n' + colors.red(i.stack); }
         return i;
     });
 
@@ -74,13 +76,13 @@ console.prodLog = (...args) => {
     // if a worker, send only prodlogs
 
     args = args.map(i => {
-        if (i && util.isError(i)) { return colors.red.inverse(i.message) + '\n' + colors.red(i.stack); }
+        if (i && i instanceof Error) { return colors.red.inverse(i.message) + '\n' + colors.red(i.stack); }
         return i;
     });
 
     if (cluster.isWorker) {
         args = args.map(i => {
-            if (i && util.isError(i)) { return colors.red.inverse(i.message) + '\n' + colors.red(i.stack); }
+            if (i && i instanceof Error) { return colors.red.inverse(i.message) + '\n' + colors.red(i.stack); }
             return i;
         });
 

@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useState, useEffect } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router';
 
 import { searchTemplates, selectTemplateResult, deselectTemplateResult, clearTemplateResults, loadProfileTemplates } from "../../actions/templates";
 import { editProfileVersion, createNewProfileDraft } from "../../actions/profiles";
@@ -31,7 +31,7 @@ import { ADDED } from '../../actions/successAlert';
 export default function AddTemplate({ isOneTemplateOnly, rootUrl }) {
     const { versionId } = useParams();
     const dispatch = useDispatch();
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const templateResults = useSelector((state) => state.searchResults.templates)
     const selectedResults = useSelector((state) => state.searchResults.selectedTemplates)
@@ -77,7 +77,7 @@ export default function AddTemplate({ isOneTemplateOnly, rootUrl }) {
             }
 
             await dispatch(loadProfileTemplates(profileVersion.uuid));
-            history.push(rootUrl);
+            navigate(rootUrl);
         }
     }
 
@@ -134,7 +134,7 @@ export default function AddTemplate({ isOneTemplateOnly, rootUrl }) {
 
             <div className="grid-row">
                 <div className="grid-col">
-                    <CancelButton className="usa-button usa-button--unstyled padding-y-105" type="button" cancelAction={() => history.goBack()} />
+                    <CancelButton className="usa-button usa-button--unstyled padding-y-105" type="button" cancelAction={() => navigate(-1)} />
                 </div>
                 <div className="grid-col">
                     <div className="pin-right">
