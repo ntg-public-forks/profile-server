@@ -14,13 +14,13 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useState } from 'react';
-import { Link, useLocation, useRouteMatch } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router';
 import { useSelector } from 'react-redux';
 import xapiPropData from './data/xapi-property-info.json';
 import RuleForm from './RuleForm';
 
 export default function CreateRule({ templateName, isEditable, isPublished, isEditing }) {
-    const match = useRouteMatch();
+    const { templateId } = useParams();
     const location = useLocation();
 
     const orgId = useSelector(state => state.application.selectedOrganizationId);
@@ -31,7 +31,7 @@ export default function CreateRule({ templateName, isEditable, isPublished, isEd
     const [showForm, setShowForm] = useState(!!rule);
 
     const pathToTemplates = `/organization/${orgId}/profile/${profileId}/version/${versionId}/templates`;
-    const pathToCurrentTemplate = `/organization/${orgId}/profile/${profileId}/version/${versionId}/templates/${match.params.templateId}`;
+    const pathToCurrentTemplate = `/organization/${orgId}/profile/${profileId}/version/${versionId}/templates/${templateId}`;
 
     return (<>
         <div className="margin-top-4">

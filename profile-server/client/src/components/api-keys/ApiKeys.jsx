@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useEffect } from 'react';
-import { Switch, Route, Link, useRouteMatch, useParams, useHistory } from 'react-router-dom';
+import { Routes, Route, Link, useLocation, useResolvedPath, useParams, useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { loadOrgApiKeys, createApiKey, editApiKey, deleteApiKey } from '../../actions/apiKeys';
@@ -24,8 +24,9 @@ import EditApiKey from './EditApiKey';
 
 export default function ApiKeys() {
     const dispatch = useDispatch();
-    const history = useHistory();
-    const { url, path } = useRouteMatch();
+    const navigate = useNavigate();
+    const url = useResolvedPath("").pathname;
+    const path = useLocation().pathname;
     const { organizationId } = useParams();
 
     useEffect(() => {
@@ -36,23 +37,23 @@ export default function ApiKeys() {
 
     function handleCreateSubmit(values) {
         dispatch(createApiKey(values));
-        history.push(url);
+        navigate(url);
     }
 
     function handleEditSubmit(values) {
         dispatch(editApiKey(Object.assign({}, values)));
-        history.push(url);
+        navigate(url);
     }
 
     function handleRemove(apiKeyId) {
         dispatch(deleteApiKey(apiKeyId));
         dispatch(loadOrgApiKeys(organizationId));
-        history.push(url)
+        navigate(url)
     }
 
     return (
-        <Switch>
-            <Route exact path={path}>
+        <Routes>
+            <Route end path={path} element={<>
                 <div className="grid-row">
                     <div className="grid-col">
                         <h2>API Keys</h2>
@@ -69,22 +70,18 @@ export default function ApiKeys() {
                     </div>
                 </div>
                 <ApiKeyTable apiKeys={apiKeys} />
-            </Route>
-            <Route exact path={`${path}/create`}>
-                <div className="usa-layout-docs usa-layout-docs__main desktop:grid-col-9 usa-prose margin-top-4">
-                    <header>
-                        <Link to={url}><span className="details-label">api keys</span></Link> <i className="fa fa-angle-right"></i>
-                        <h2 className="site-page-title margin-top-0">Create API Key</h2>
-                    </header>
-                    <p className="site-text-intro">
-                        Instructions if needed...
-                    </p>
-                    <CreateApiKeyForm onSubmit={handleCreateSubmit} onCancel={() => history.goBack()} />
-                </div>
-            </Route>
-            <Route exact path={`${path}/:apiKeyId/edit`}>
-                <EditApiKey rootUrl={url} onSubmit={handleEditSubmit} onCancel={() => history.goBack()} onRemove={handleRemove} />
-            </Route>
-        </Switch>
+            </>}/>
+            <Route end path={`${path}/create`} element={<div className="usa-layout-docs usa-layout-docs__main desktop:grid-col-9 usa-prose margin-top-4">
+                <header>
+                    <Link to={url}><span className="details-label">api keys</span></Link> <i className="fa fa-angle-right"></i>
+                    <h2 className="site-page-title margin-top-0">Create API Key</h2>
+                </header>
+                <p className="site-text-intro">
+                    Instructions if needed...
+                </p>
+                <CreateApiKeyForm onSubmit={handleCreateSubmit} onCancel={() => history.goBack()} />
+            </div>}/>
+            <Route end path={`${path}/:apiKeyId/edit`} element={<EditApiKey rootUrl={url} onSubmit={handleEditSubmit} onCancel={() => history.goBack()} onRemove={handleRemove} />}/>
+        </Routes>
     )
 }

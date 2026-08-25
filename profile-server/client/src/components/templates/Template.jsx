@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useEffect, useState } from 'react';
-import { useRouteMatch, Switch, Route, useHistory, useParams, Redirect, useLocation, NavLink } from 'react-router-dom';
+import { useResolvedPath, Routes, Route, useNavigate, useParams, Navigate, useLocation, NavLink } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 
 import TemplateDetail from "./TemplateDetail";
@@ -48,11 +48,12 @@ import ClaimButton from '../controls/ClaimButton';
 
 export default function Template({ isMember, isCurrentVersion, isOrphan }) {
 
-    const { url, path } = useRouteMatch();
+    const url = useResolvedPath("").pathname;
+    const path = useLocation().pathname;
     const templatesListURL = url.split('/').slice(0, -1).join('/');
     const location = useLocation();
     const { profileId, templateId } = useParams();
-    const history = useHistory();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -100,7 +101,7 @@ export default function Template({ isMember, isCurrentVersion, isOrphan }) {
             let propertyValue = {};
             propertyValue[values.propertyType] = values.properties;
             dispatch(editTemplate(Object.assign({}, template, propertyValue), actualAction || ADDED, "Determining property"));
-            history.push(url);
+            navigate(url);
         }
     }
 
@@ -162,7 +163,7 @@ export default function Template({ isMember, isCurrentVersion, isOrphan }) {
         if (isEditable) {
             dispatch(deleteTemplate(template));
             setIsEditingDetails(false);
-            history.push(`/organization/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}`);
+            navigate(`/organization/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}`);
         }
     }
 
@@ -175,7 +176,7 @@ export default function Template({ isMember, isCurrentVersion, isOrphan }) {
     async function onClaimTemplate(profile) {
         const versionId = (profile.currentDraftVersion ? profile.currentDraftVersion.uuid : profile.currentPublishedVersion.uuid);
         await dispatch(claimTemplate(profile.organization, profile.id, versionId, templateId));
-        history.push(`/deleted-items/organization/${selectedOrganizationId}/profile/${selectedProfileId}/version/${versionId}`);
+        navigate(`/deleted-items/organization/${selectedOrganizationId}/profile/${selectedProfileId}/version/${versionId}`);
     }
 
     function checkDeterminingPropertyConflict(detpropType, noconflictFunction, cancelFunction) {
@@ -207,78 +208,62 @@ export default function Template({ isMember, isCurrentVersion, isOrphan }) {
         await dispatch(loadProfileTemplates(selectedProfileVersionId));
 
         setShowModal(false);
-        history.push(`/organization/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}/templates`);
+        navigate(`/organization/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}/templates`);
     }
 
     return (
         <div>
-            <Switch>
-                <Route exact path={`${path}/determining-properties/create`}>
-                    {(isEditable) ?
-                        <CreateDeterminingProperty
-                            onDeterminingPropertyAdd={(values) => onDeterminingPropertyAdd(values)}
-                            breadcrumbs={[{ to: templatesListURL, crumb: "statement templates" }, { to: url, crumb: template.name }]}
-                            checkConflict={checkDeterminingPropertyConflict}
-                        />
-                        : <Redirect to={url} />
-                    }
-                </Route>
-                <Route exact path={`${path}/determining-properties/:propertyType/edit`}>
-                    {(isEditable) ?
-                        <EditDeterminingProperty
-                            onDeterminingPropertyAdd={(values) => onDeterminingPropertyAdd(values, EDITED)} />
-                        : <Redirect to={url} />
-                    }
-                </Route>
-                <Route exact path={`${path}/(concepts|determining-properties)/:conceptId`}>
-                    <ConceptDetail
-                        isMember={isMember}
-                        isCurrentVersion={isCurrentVersion}
-                        isPublished={isPublished}
+            <Routes>
+                <Route end path={`${path}/determining-properties/create`} element={(isEditable) ?
+                    <CreateDeterminingProperty
+                        onDeterminingPropertyAdd={(values) => onDeterminingPropertyAdd(values)}
                         breadcrumbs={[{ to: templatesListURL, crumb: "statement templates" }, { to: url, crumb: template.name }]}
+                        checkConflict={checkDeterminingPropertyConflict}
                     />
-                </Route>
-                <Route exact path={`${path}/rule/create`}>
-                    {(isEditable) ?
-                        <Lock resourceUrl={`/org/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}/template/${template.uuid}`}>
-                            <CreateRule templateName={template.name} isEditable={isEditable} isPublished={isPublished} isEditing={false}></CreateRule>
-                        </Lock>
-                        : <Redirect to={url} />
-                    }
-                </Route>
-                <Route exact path={`${path}/rule/edit`}>
-                    {(isEditable && !belongsToAnotherProfile) ?
-                        <Lock resourceUrl={`/org/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}/template/${template.uuid}`}>
-                            <CreateRule templateName={template.name} isEditable={isEditable} isPublished={isPublished} isEditing={true}></CreateRule>
-                        </Lock>
-                        : <Redirect to={url} />
-                    }
-                </Route>
-                <Route exact path={`${path}/rule/view`}>
-                    <Rule templateName={template.name} url={`${url}/rule`} belongsToAnotherProfile={belongsToAnotherProfile}></Rule>
-                </Route>
-                <Route exact path={`${path}/related-statement-templates/:templatereftype/create`}>
-                    {(isEditable) ?
-                        <Lock resourceUrl={`/org/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}/template/${template.uuid}`}>
-                            <AddRelatedStatementTemplate
-                                breadcrumbs={[{ to: templatesListURL, crumb: "statement templates" }, { to: url, crumb: selectedProfileVersion.name }]}
-                            />
-                        </Lock>
-                        : <Redirect to={url} />
-                    }
-                </Route>
-                <Route exact path={`${path}/related-statement-templates/:templatereftype/edit`}>
-                    {(isEditable) ?
-                        <Lock resourceUrl={`/org/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}/template/${template.uuid}`}>
-                            <AddRelatedStatementTemplate
-                                breadcrumbs={[{ to: templatesListURL, crumb: "statement templates" }, { to: url, crumb: selectedProfileVersion.name }]}
-                                isEditing={true}
-                            />
-                        </Lock>
-                        : <Redirect to={url} />
-                    }
-                </Route>
-                <Route path={path}>
+                    : <Navigate to={url} />
+                }/>
+                <Route end path={`${path}/determining-properties/:propertyType/edit`} element={(isEditable) ?
+                    <EditDeterminingProperty
+                        onDeterminingPropertyAdd={(values) => onDeterminingPropertyAdd(values, EDITED)} />
+                    : <Navigate to={url} />
+                }/>
+                <Route end path={`${path}/(concepts|determining-properties)/:conceptId`} element={<ConceptDetail
+                    isMember={isMember}
+                    isCurrentVersion={isCurrentVersion}
+                    isPublished={isPublished}
+                    breadcrumbs={[{ to: templatesListURL, crumb: "statement templates" }, { to: url, crumb: template.name }]}
+                />}/>
+                <Route end path={`${path}/rule/create`} element={(isEditable) ?
+                    <Lock resourceUrl={`/org/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}/template/${template.uuid}`}>
+                        <CreateRule templateName={template.name} isEditable={isEditable} isPublished={isPublished} isEditing={false}></CreateRule>
+                    </Lock>
+                    : <Navigate to={url} />
+                }/>
+                <Route end path={`${path}/rule/edit`} element={(isEditable && !belongsToAnotherProfile) ?
+                    <Lock resourceUrl={`/org/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}/template/${template.uuid}`}>
+                        <CreateRule templateName={template.name} isEditable={isEditable} isPublished={isPublished} isEditing={true}></CreateRule>
+                    </Lock>
+                    : <Navigate to={url} />
+                }/>
+                <Route end path={`${path}/rule/view`} element={<Rule templateName={template.name} url={`${url}/rule`} belongsToAnotherProfile={belongsToAnotherProfile}></Rule>}/>
+                <Route end path={`${path}/related-statement-templates/:templatereftype/create`} element={(isEditable) ?
+                    <Lock resourceUrl={`/org/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}/template/${template.uuid}`}>
+                        <AddRelatedStatementTemplate
+                            breadcrumbs={[{ to: templatesListURL, crumb: "statement templates" }, { to: url, crumb: selectedProfileVersion.name }]}
+                        />
+                    </Lock>
+                    : <Navigate to={url} />
+                }/>
+                <Route end path={`${path}/related-statement-templates/:templatereftype/edit`} element={(isEditable) ?
+                    <Lock resourceUrl={`/org/${selectedOrganizationId}/profile/${selectedProfileId}/version/${selectedProfileVersionId}/template/${template.uuid}`}>
+                        <AddRelatedStatementTemplate
+                            breadcrumbs={[{ to: templatesListURL, crumb: "statement templates" }, { to: url, crumb: selectedProfileVersion.name }]}
+                            isEditing={true}
+                        />
+                    </Lock>
+                    : <Navigate to={url} />
+                }/>
+                <Route path={path} element={<>
                     <div className="grid-row border-bottom-2px border-base-lighter">
                         <div className="grid-col margin-top-3">
                             <Breadcrumb breadcrumbs={[{ to: templatesListURL, crumb: 'statement templates' }]} />
@@ -412,7 +397,7 @@ export default function Template({ isMember, isCurrentVersion, isOrphan }) {
                         <div id="a4" className="usa-accordion__content usa-prose" hidden>
                             <RuleTable
                                 rules={template.rules}
-                                onAddRule={() => history.push(`${url}/rule/create`)}
+                                onAddRule={() => navigate(`${url}/rule/create`)}
                                 url={`${url}/rule`}
                                 removeRule={removeRule}
                                 isMember={isMember}
@@ -459,8 +444,8 @@ export default function Template({ isMember, isCurrentVersion, isOrphan }) {
                         </div>
 
                     </div>
-                </Route>
-            </Switch>
+                </>}/>
+            </Routes>
             <ModalBoxWithoutClose show={showModal}>
                 <div className="grid-row">
                     <div className="grid-col">
@@ -494,7 +479,7 @@ export default function Template({ isMember, isCurrentVersion, isOrphan }) {
                 </div>
                 <div className="grid-row">
                     <div className="grid-col" style={{ maxWidth: "fit-content" }}>
-                        <button className="usa-button submit-button" style={{ margin: "1.5em 0em" }} onClick={() => { setConfirmDetPropOverwrite(false); history.push(`${url}/determining-properties/${detpropOverwrite.detpropType}/edit`) }}>Edit existing</button>
+                        <button className="usa-button submit-button" style={{ margin: "1.5em 0em" }} onClick={() => { setConfirmDetPropOverwrite(false); navigate(`${url}/determining-properties/${detpropOverwrite.detpropType}/edit`) }}>Edit existing</button>
                     </div>
                     <div className="grid-col" style={{ maxWidth: "fit-content" }}>
                         <button className="usa-button usa-button--unstyled" onClick={() => { detpropOverwrite.cancelFunction(); setConfirmDetPropOverwrite(false); }} style={{ margin: "2.3em 1.5em" }}><b>Cancel</b></button>

@@ -18,7 +18,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { Detail, Tags, Translations } from '../DetailComponents';
 import { selectInfopanelPattern } from '../../actions/patterns';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import DeprecatedAlert from '../controls/deprecatedAlert';
 
 export default function PatternInfoPanel({ infoPanelPattern }) {

@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useEffect } from 'react';
-import { useRouteMatch, Route, Switch, Link, useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useResolvedPath, Route, Routes, Link, useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { putHarvest } from '../../actions/profiles';
@@ -27,10 +27,11 @@ import ConceptDetail from "./ConceptDetails"
 import SortingTable from '../SortingTable';
 
 export default function Concepts({ isMember, isCurrentVersion, isOrphan }) {
-    const { path, url } = useRouteMatch();
+    const url = useResolvedPath("").pathname;
+    const path = useLocation().pathname;
     const dispatch = useDispatch();
     const location = useLocation();  
-    const history = useHistory();
+    const navigate = useNavigate();
     const { selectedProfileVersionId, selectedProfileVersion } = useSelector(state => state.application);
 
     useEffect(() => {
@@ -49,19 +50,19 @@ export default function Concepts({ isMember, isCurrentVersion, isOrphan }) {
         if(importedConcept){ 
             const { concept, updateHarvest } = importedConcept;
             dispatch(putHarvest(deleteConceptProp(updateHarvest, concept.groupIndex, concept.conceptType)));
-            history.goBack();
+            navigate(-1);
         }else{
-            history.push(url);
+            navigate(url);
         }      
     }
     function onCreateCancel(){
-        importedConcept ? history.goBack() : history.push(url)
+        importedConcept ? navigate(-1) : navigate(url)
     }
 
     return (
         <div>
-            <Switch>
-                <Route exact path={path}>
+            <Routes>
+                <Route end path={path} element={<>
                     <div className="grid-row">
                         <div className="desktop:grid-col">
                             <h2 style={{ marginBottom: 0 }}>Concepts</h2>
@@ -95,18 +96,12 @@ export default function Concepts({ isMember, isCurrentVersion, isOrphan }) {
                             data={data}
                             emptyMessage="There are no concepts in this profile. Concepts created in this profile or added through import or statement templates will appear here." />
                     </div>
-                </Route>
-                <Route path={`${path}/create`}>
-                    <CreateConcept rootUrl={url} onCancel={onCreateCancel} onCreate={onCreateConcept} importedConcept={importedConcept}></CreateConcept>
-                </Route>
-                <Route exact path={`${path}/add`}>
-                    <AddConcepts rootUrl={url} addToName="Profile"></AddConcepts>
-                </Route>
-                <Route path={`${path}/:conceptId`}>
-                    <ConceptDetail isMember={isMember} isCurrentVersion={isCurrentVersion} isOrphan={isOrphan} />
-                </Route>
+                </>}/>
+                <Route path={`${path}/create`} element={<CreateConcept rootUrl={url} onCancel={onCreateCancel} onCreate={onCreateConcept} importedConcept={importedConcept}></CreateConcept>}/>
+                <Route end path={`${path}/add`} element={<AddConcepts rootUrl={url} addToName="Profile"></AddConcepts>}/>
+                <Route path={`${path}/:conceptId`} element={<ConceptDetail isMember={isMember} isCurrentVersion={isCurrentVersion} isOrphan={isOrphan} />}/>
 
-            </Switch>
+            </Routes>
         </div>
     );
 }

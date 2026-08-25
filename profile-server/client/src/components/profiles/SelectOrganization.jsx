@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { getOrganizations } from "../../actions/organizations";

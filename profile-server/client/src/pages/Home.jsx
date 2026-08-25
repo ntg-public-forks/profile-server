@@ -23,7 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import CardList from "../components/home/CardList";
 
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import { pick } from "../utils";
 

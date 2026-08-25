@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useState } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router';
 import ScopeNote from '../fields/ScopeNote';
 
 export default function Rule({ templateName, url, belongsToAnotherProfile }) {

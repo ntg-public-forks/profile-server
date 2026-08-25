@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useState, useEffect } from 'react';
-import { NavLink, useHistory } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router';
 import AccountButton from "../../components/users/AccountButton"
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
@@ -25,7 +25,7 @@ import API from '../../api';
 export default function TitleBanner() {
     const dispatch = useDispatch();
     let userData = useSelector((store) => store.userData);
-    let history = useHistory();
+    let navigate = useNavigate();
     let [searchString, setSearchString] = useState();
     let [orphanProfile, setOrphanProfile] = useState({});
 
@@ -37,7 +37,7 @@ export default function TitleBanner() {
         });
     }, [])
     function search(e) {
-        history.push({ pathname: "/search", state: { search: searchString } });
+        navigate({ pathname: "/search", state: { search: searchString } });
         e.preventDefault();
         setSearchString("");
         return false;
@@ -127,21 +127,21 @@ export default function TitleBanner() {
                                 </button>
                                 <ul id="basic-nav-section-admin" className="usa-nav__submenu" hidden>
                                     <li className="usa-nav__submenu-item">
-                                        <NavLink exact to="/admin/users"
+                                        <NavLink end to="/admin/users"
                                             className="usa-link"
                                         >
                                             Manage Users
                                         </NavLink>
                                     </li>
                                     <li className="usa-nav__submenu-item">
-                                        <NavLink exact to="/admin/verification"
+                                        <NavLink end to="/admin/verification"
                                             className="usa-link"
                                         >
                                             Verify Profiles
                                         </NavLink>
                                     </li>
                                     <li className="usa-nav__submenu-item">
-                                        <NavLink exact to="/admin/analytics"
+                                        <NavLink end to="/admin/analytics"
                                             className="usa-link"
                                         >
                                             Analytics

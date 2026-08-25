@@ -18,7 +18,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { Detail, Translations, Tags } from '../DetailComponents';
 import { selectInfopanelTemplate } from '../../actions/templates';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import DeprecatedAlert from '../controls/deprecatedAlert';
 
 export default function StatementTemplateInfoPanel({ infoPanelTemplate, onViewConceptClick }) {

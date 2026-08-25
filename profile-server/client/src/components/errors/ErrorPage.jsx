@@ -14,10 +14,10 @@
 * limitations under the License.
 **************************************************************** */
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 export default function ErrorPage() {
-    const history = useHistory();
+    const navigate = useNavigate();
 
     return (
         <div className="grid-container" id="main-content">
@@ -25,7 +25,7 @@ export default function ErrorPage() {
                 <div className="usa-alert__body">
                     <h3 className="usa-alert__heading">This page does not exist.</h3>
                     <p className="usa-alert__text">
-                        Click <button className="usa-button usa-button--unstyled" onClick={() => history.goBack()}>here</button> to return.
+                        Click <button className="usa-button usa-button--unstyled" onClick={() => navigate(-1)}>here</button> to return.
                     </p>
                 </div>
             </div>

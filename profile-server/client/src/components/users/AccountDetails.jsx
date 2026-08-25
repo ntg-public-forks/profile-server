@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useState, useEffect } from 'react';
-import { useHistory, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router';
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 import ErrorValidation from '../controls/errorValidation';
@@ -43,7 +43,7 @@ export default function AccountDetails(props) {
     const isAdmin = userData.type === 'admin';
     const needsUsername = !userData.user.usernameChosen;
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const [showDialog, setShowDialog] = useState(false);
     const [orgToLeave, setOrgToLeave] = useState();
     const [isEditing, setIsEditing] = useState(false);
@@ -56,7 +56,7 @@ export default function AccountDetails(props) {
     const myOrgRequests = organizations && organizations.filter(org => Array.isArray(org.memberRequests) ? org.memberRequests.find(mem => mem.user != undefined && mem.user.uuid === userData.user.uuid) : [])
 
     function join() {
-        history.push('/organization');
+        navigate('/organization');
     }
 
     async function leaveWorkingGroup() {

@@ -15,12 +15,12 @@
 **************************************************************** */
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useRouteMatch } from 'react-router-dom';
+import { useResolvedPath } from 'react-router';
 
 import WebHookTableRow from './WebHookTableRow';
 
 export default function WebHookTable({ webHooks, onRemove }) {
-    const { url } = useRouteMatch()
+    const url = useResolvedPath("").pathname;
    
 
     return (

@@ -14,12 +14,11 @@
 * limitations under the License.
 **************************************************************** */
 import React from 'react';
-import { Link, useRouteMatch} from 'react-router-dom';
+import { Link, useResolvedPath, useNavigate} from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { Detail, Translations, Tags } from '../DetailComponents';
 import { selectProfileVersion } from '../../actions/profiles';
-import history from '../../history';
 
 import Sparkline from "../controls/sparkline";
 import { useState } from 'react';
@@ -27,9 +26,9 @@ import { useState } from 'react';
 
 
 export default function ProfileDetails({ isMember, isCurrentVersion }) {
-
+    const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { url } = useRouteMatch();
+    const url = useResolvedPath("").pathname;
     const [viewCount, setViewCount] = useState('');
     const [viewDate, setViewDate] = useState();
 
@@ -45,7 +44,7 @@ export default function ProfileDetails({ isMember, isCurrentVersion }) {
 
     const changeVersion = (e) => {
         dispatch(selectProfileVersion(organization.uuid, profile.uuid, e.target.value));
-        history.push(`/organization/${organization.uuid}/profile/${profile.uuid}/version/${e.target.value}`);
+        navigate(`/organization/${organization.uuid}/profile/${profile.uuid}/version/${e.target.value}`);
     }
 
     return (

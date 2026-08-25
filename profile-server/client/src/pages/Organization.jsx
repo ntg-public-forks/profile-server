@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useEffect, useState } from 'react';
-import { Route, Switch, useRouteMatch, useHistory, useParams, Redirect } from 'react-router-dom';
+import { Route, Routes, useLocation, useResolvedPath, useNavigate, useParams, Navigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { createProfile } from "../actions/profiles";
@@ -36,8 +36,9 @@ import PrivateRoute from '../components/users/PrivateRoute';
 export default function Organization() {
 
     const dispatch = useDispatch();
-    const history = useHistory();
-    const { path, url } = useRouteMatch();
+    const navigate = useNavigate();
+    const url = useResolvedPath("").pathname;
+    const path = useLocation().pathname;
     const { organizationId } = useParams();
     const [showModal, setShowModal] = useState(false);
 
@@ -57,11 +58,11 @@ export default function Organization() {
 
     function handleProfileCreate(values) {
         dispatch(createProfile(organizationId, values));
-        history.push(url);
+        navigate(url);
     }
 
     function handleCancelProfileCreate() {
-        history.push(url);
+        navigate(url);
     }
 
     async function joinAction() {
@@ -76,16 +77,12 @@ export default function Organization() {
 
     return (<>
         <LoadingSpinner></LoadingSpinner>
-        <Switch>
-            <PrivateRoute exact path={`${path}/profile/create`}>
-                <CreateProfile>
-                    <CreateProfileForm handleSubmit={handleProfileCreate} handleCancel={handleCancelProfileCreate} />
-                </CreateProfile>
-            </PrivateRoute>
-            <PrivateRoute path={`${path}/profile/:profileId/version/:versionId`}>
-                <Profile rootUrl={url} />
-            </PrivateRoute>
-            <Route path={path}>
+        <Routes>
+            <Route end path={`${path}/profile/create`} element={<PrivateRoute><CreateProfile>
+                <CreateProfileForm handleSubmit={handleProfileCreate} handleCancel={handleCancelProfileCreate} />
+            </CreateProfile></PrivateRoute>}/>
+            <Route path={`${path}/profile/:profileId/version/:versionId`} element={<PrivateRoute><Profile rootUrl={url} /></PrivateRoute>}/>
+            <Route path={path} element={<>
                 <OrganizationHeader user={user} organization={organization} organizationId={organizationId} url={url} isMember={isMember} joinAction={joinAction}></OrganizationHeader>
                 {
                     showModal &&
@@ -99,40 +96,28 @@ export default function Organization() {
                     </div>
                 }
                 <main id="main-content" className={"grid-container  padding-bottom-4"}>
-                    <Switch>
-                        <Route exact path={`${path}/about`}>
-                            <About organization={organization} isMember={isMember} rootUrl={url} />
-                        </Route>
-                        <PrivateRoute exact path={`${path}/edit`}>
-                            <Lock resourceUrl={`/org/${organizationId}`}>
-                                <EditOrganization organization={organization} rootUrl={url} />
-                            </Lock>
-                        </PrivateRoute>
-                        <Route exact path={path}>
-                            <Profiles profiles={organization.profiles} isMember={isMember} />
-                        </Route>
-                        <PrivateRoute path={`${path}/members`}>
-                            <Members isMember={isMember} />
-                        </PrivateRoute>
-                        <PrivateRoute path={`${path}/apiKeys`}>
+                    <Routes>
+                        <Route end path={`${path}/about`} element={<About organization={organization} isMember={isMember} rootUrl={url} />}/>
+                        <Route end path={`${path}/edit`} element={<PrivateRoute><Lock resourceUrl={`/org/${organizationId}`}>
+                            <EditOrganization organization={organization} rootUrl={url} />
+                        </Lock></PrivateRoute>}/>
+                        <Route end path={path} element={<Profiles profiles={organization.profiles} isMember={isMember} />}/>
+                        <Route path={`${path}/members`} element={<PrivateRoute><Members isMember={isMember} /></PrivateRoute>}/>
+                        <Route path={`${path}/apiKeys`} element={<PrivateRoute>
                             {isMember === 'admin' ?
                                 <ApiKeys />
                                 :
-                                <Redirect to={`${url}/about`} />
+                                <Navigate to={`${url}/about`} />
                             }
-                        </PrivateRoute>
+                        </PrivateRoute>}/>
 
 
-                        <Route>
-                            <ErrorPage />
-                        </Route>
-                    </Switch>
+                        <Route element={<ErrorPage />}/>
+                    </Routes>
                 </main>
-            </Route>
+            </>}/>
 
-            <Route>
-                <ErrorPage />
-            </Route>
-        </Switch>
+            <Route element={<ErrorPage />}/>
+        </Routes>
     </>);
 }

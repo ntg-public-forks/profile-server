@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useEffect } from 'react';
-import { useRouteMatch, Switch, Route, NavLink, Link, Redirect } from 'react-router-dom';
+import { useLocation, useResolvedPath, Routes, Route, NavLink, Link, Navigate } from 'react-router';
 import { useDispatch, useSelector } from "react-redux";
 
 import AddTemplate from "./AddTemplate";
@@ -24,7 +24,8 @@ import SortingTable from '../SortingTable';
 import { loadProfileTemplates } from "../../actions/templates";
 
 export default function Templates({ isMember, isCurrentVersion, isOrphan }) {
-    const { url, path } = useRouteMatch();
+    const url = useResolvedPath("").pathname;
+    const path = useLocation().pathname;
     const dispatch = useDispatch();
     const { selectedProfileVersionId, selectedProfileId } = useSelector(state => state.application);
     let templates = useSelector((state) => state.templates);
@@ -41,15 +42,15 @@ export default function Templates({ isMember, isCurrentVersion, isOrphan }) {
 
     return (
         <>
-            <Switch>
-                <Route exact path={path}>
+            <Routes>
+                <Route end path={path} element={<>
                     <div className="grid-row">
                         <div className="desktop:grid-col">
                             <h2 style={{ marginBottom: 0 }}>Statement Templates</h2>
                         </div>
                         {isMember && isCurrentVersion &&
                             <div className="grid-col display-flex flex-column flex-align-end">
-                                <NavLink exact
+                                <NavLink end
                                     to={`${url}/add`}
                                     className="usa-button margin-top-2 margin-right-0">
                                     <i className="fa fa-plus margin-right-05"></i> <span> Add Statement Template</span>
@@ -63,23 +64,17 @@ export default function Templates({ isMember, isCurrentVersion, isOrphan }) {
                             data={data}
                             emptyMessage="There are no statement templates associated with this profile." />
                     </div>
-                </Route>
-                <Route exact path={`${path}/add`}>
-                    {(isMember && isCurrentVersion) ?
-                        <AddTemplate rootUrl={url} />
-                        : <Redirect to={url} />
-                    }
-                </Route>
-                <Route exact path={`${path}/create`}>
-                    {(isMember && isCurrentVersion) ?
-                        <CreateTemplateForm rootUrl={url} />
-                        : <Redirect to={url} />
-                    }
-                </Route>
-                <Route path={`${path}/:templateId`}>
-                    <Template isMember={isMember} isCurrentVersion={isCurrentVersion} isOrphan={isOrphan} />
-                </Route>
-            </Switch>
+                </>}/>
+                <Route end path={`${path}/add`} element={(isMember && isCurrentVersion) ?
+                    <AddTemplate rootUrl={url} />
+                    : <Navigate to={url} />
+                }/>
+                <Route end path={`${path}/create`} element={(isMember && isCurrentVersion) ?
+                    <CreateTemplateForm rootUrl={url} />
+                    : <Navigate to={url} />
+                }/>
+                <Route path={`${path}/:templateId`} element={<Template isMember={isMember} isCurrentVersion={isCurrentVersion} isOrphan={isOrphan} />}/>
+            </Routes>
         </>
     );
 }

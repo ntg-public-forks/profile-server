@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useState } from 'react';
-import { Route, Link, useRouteMatch, useHistory, useParams } from 'react-router-dom';
+import { Route, Link, useLocation, useNavigate, useParams } from 'react-router';
 import { useSelector, useDispatch } from "react-redux";
 
 import { searchPatterns, selectPatternResult, deselectPatternResult, clearPatternResults, loadProfilePatterns } from "../../actions/patterns";
@@ -31,9 +31,9 @@ import { ADDED } from '../../actions/successAlert';
 
 export default function AddPattern({ isOnePatternOnly, root_url }) {
 
-    const { path } = useRouteMatch();
+    const path = useLocation().pathname;
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const patternResults = useSelector((state) => state.searchResults.patterns)
     const selectedResults = useSelector((state) => state.searchResults.selectedPatterns)
     const profileVersion = useSelector((state) => state.application.selectedProfileVersion);
@@ -73,7 +73,7 @@ export default function AddPattern({ isOnePatternOnly, root_url }) {
             }
 
             await dispatch(loadProfilePatterns(profileVersion.uuid));
-            history.push(root_url);
+            navigate(root_url);
         }
     }
 
@@ -113,7 +113,7 @@ export default function AddPattern({ isOnePatternOnly, root_url }) {
 
         <div className="grid-row">
             <div className="grid-col">
-                <CancelButton className="usa-button usa-button--unstyled" style={{ marginTop: "0.6em" }} type="button" cancelAction={() => history.goBack()} />
+                <CancelButton className="usa-button usa-button--unstyled" style={{ marginTop: "0.6em" }} type="button" cancelAction={() => navigate(-1)} />
             </div>
             <div className="grid-col">
                 <div className="pin-right">
@@ -137,11 +137,7 @@ export default function AddPattern({ isOnePatternOnly, root_url }) {
             }
         </Flyout>
 
-        <Route exact path={`${path}/templates/:templateId`}>
-            <Template />
-        </Route>
-        <Route exact path={`${path}/patterns/:patternId`}>
-            <PatternDetail />
-        </Route>
+        <Route end path={`${path}/templates/:templateId`} element={<Template />}/>
+        <Route end path={`${path}/patterns/:patternId`} element={<PatternDetail />}/>
     </>);
 }

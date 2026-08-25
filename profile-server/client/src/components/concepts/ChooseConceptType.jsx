@@ -14,11 +14,11 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useState } from 'react'
-import { Link, useRouteMatch } from 'react-router-dom';
+import { Link, useResolvedPath } from 'react-router';
 import CancelButton from '../controls/cancelButton';
 
 export default function ChooseConceptType({ onCancel }) {
-    const { url } = useRouteMatch();
+    const url = useResolvedPath("").pathname;
     const [conceptType, setConceptType] = useState();
 
     return (<>

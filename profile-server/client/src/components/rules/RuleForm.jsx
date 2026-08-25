@@ -15,7 +15,7 @@
 **************************************************************** */
 import React from 'react';
 import { Formik, Form, Field } from 'formik';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import { validate } from 'jsonschema';
 import ScopeNote from '../fields/ScopeNote';
@@ -28,7 +28,7 @@ import { CREATED, EDITED } from '../../actions/successAlert';
 import { validateRuleContent } from '../../utils/ruleContentValidation';
 
 export default function RuleForm({ rule, jsonPath, returnTo, isEditable, isPublished, isEditing }) {
-    const history = useHistory();
+    const navigate = useNavigate();
     const [errorText, setErrorText] = useState('');
     const [successText, setSuccessText] = useState('');
     const [validated, setValidated] = useState(false);
@@ -93,7 +93,7 @@ export default function RuleForm({ rule, jsonPath, returnTo, isEditable, isPubli
 
                 await dispatch(editTemplate(updatedTemplate, isEditing ? EDITED : CREATED, "Rule"));
                 await dispatch(selectTemplate(updatedTemplate.uuid));
-                history.push(returnTo);
+                navigate(returnTo);
             }}
         >
             {props =>
@@ -162,7 +162,7 @@ export default function RuleForm({ rule, jsonPath, returnTo, isEditable, isPubli
                             <div className="">
                                 <button className="usa-button margin-right-3" onClick={() => validateRule(props.values.rule, true)}>Check JSON Format</button>
                                 <button className="usa-button margin-right-3" disabled={!validated} onClick={props.handleSubmit}>{rule ? 'Save' : 'Add'} Rule</button>
-                                <CancelButton className="usa-button usa-button--unstyled" type="button" cancelAction={() => history.push(returnTo)} />
+                                <CancelButton className="usa-button usa-button--unstyled" type="button" cancelAction={() => navigate(returnTo)} />
                             </div>
                         </div>
                     </div>

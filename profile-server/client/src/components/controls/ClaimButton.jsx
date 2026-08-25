@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useState, useRef } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+import { useResolvedPath } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 
 import ModalBox from '../controls/modalBox';
@@ -28,7 +28,7 @@ export default function ClaimButton({ className, preventDefault, onConfirm }) {
     const [profiles, setProfiles] = useState([]);
     const [targetOrganizationUuid, setTargetOrganizationUuid] = useState();
     const dispatch = useDispatch();
-    const { url } = useRouteMatch();
+    const url = useResolvedPath("").pathname;
     const orgModal = useRef();
 
 

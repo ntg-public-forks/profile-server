@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { Component } from 'react';
-import { Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router';
 
 import Home from "./pages/Home";
 import Organizations from './pages/Organizations';
@@ -34,8 +34,6 @@ import Analytics from "./components/admin/Analytics";
 import Search from "./components/search/Search";
 import User from './pages/Users.jsx';
 
-import history from "./history";
-
 //import OfficialBanner from './components/OfficialBanner';
 import TitleBanner from './components/home/TitleBanner';
 import PrivateRoute from './components/users/PrivateRoute';
@@ -50,75 +48,50 @@ import SuccessBanner from './components/controls/successBanner';
 export default class App extends Component {
 
     render() {
-        return (<>
-            {/*<OfficialBanner /> -->*/}
-            <Router history={history}>
+        return (<BrowserRouter>
                 <TitleBanner />
                 <ErrorBoundary />
                 <SuccessBanner />
                 <GlobalErrorBoundary>
-                    <Switch>
-                        <Route path="/api/iri/:iri">
-                            <IRI />
-                        </Route>
-                        <Route path="/profile/:profileId">
-                            <Profile />
-                        </Route>
-                        <Route exact path="/">
-                            <Home />
-                        </Route>
-                        <Route exact path="/organization">
-                            <Organizations />
-                        </Route>
-                        <PrivateRoute exact path="/organization/create">
-                            <CreateOrganization />
-                        </PrivateRoute>
-                        <Route path="/organization/:organizationId">
-                            <Organization />
-                        </Route>
-                        <PrivateRoute exact path="/profiles/create">
-                            <SelectOrganization />
-                        </PrivateRoute>
-                        <PrivateRoute path="/user/hooks">
-                            <Webhooks />
-                        </PrivateRoute>
-                        <Route path="/user">
-                            <User></User>
-                        </Route>
-                        <Route path="/search">
-                            <Search></Search>
-                        </Route>
-                        <Route path="/profiles">
-                            <Profiles />
-                        </Route>
-                        <Route path="/api-info">
-                            <APIInfo></APIInfo>
-                        </Route>
-                        <Route path="/help">
-                            <HelpPage></HelpPage>
-                        </Route>
-                        <Route path="/FAQs">
-                            <FAQPage></FAQPage>
-                        </Route>
-                        <Route path="/deleted-items/organization/:organizationId/profile/:profileId/version/:versionId">
-                            <DeletedItemsPage></DeletedItemsPage>
-                        </Route>
-                        <AdminRoute exact path="/admin/users">
-                            <Users />
-                        </AdminRoute>
-                        <AdminRoute exact path="/admin/users/:userId">
-                            <AccountDetails adminView={true} />
-                        </AdminRoute>
-                        <AdminRoute exact path="/admin/verification">
-                            <VerificationRequests />
-                        </AdminRoute>
-                        <AdminRoute exact path="/admin/analytics">
-                            <Analytics />
-                        </AdminRoute>
-                        <Route>
-                            <ErrorPage />
-                        </Route>
-                    </Switch>
+                    <Routes>
+                        <Route path="/api/iri/:iri" element={<IRI />}/>
+                        <Route path="/profile/:profileId" element={<Profile />}/>
+                        <Route end path="/" element={<Home />}/>
+                        <Route end path="/organization" element={<Organizations />}/>
+                        <Route end path="/organization/create" element={<PrivateRoute><CreateOrganization /></PrivateRoute>}/>
+                        <Route path="/organization/:organizationId" element={<Organization />}/>
+                        <Route end path="/profiles/create" element={<PrivateRoute><SelectOrganization /></PrivateRoute>}/>
+                        <Route path="/user/hooks" element={<PrivateRoute><Webhooks /></PrivateRoute>}/>
+                        <Route path="/user" element={<User></User>}/>
+                        <Route path="/search" element={<Search></Search>}/>
+                        <Route path="/profiles" element={<Profiles />}/>
+                        <Route path="/api-info/*" element={<APIInfo></APIInfo>}/>
+                        <Route path="/help" element={<HelpPage></HelpPage>}/>
+                        <Route path="/FAQs" element={<FAQPage></FAQPage>}/>
+                        <Route path="/deleted-items/organization/:organizationId/profile/:profileId/version/:versionId"
+                            element={<DeletedItemsPage/>}/>
+                        <Route end path="/admin/users" element={
+                            <AdminRoute>
+                                <Users />
+                            </AdminRoute>
+                        }/>
+                        <Route end path="/admin/users/:userId" element={
+                            <AdminRoute>
+                                <AccountDetails adminView={true} />
+                            </AdminRoute>
+                        }/>
+                        <Route end path="/admin/verification" element={
+                            <AdminRoute>
+                                <VerificationRequests />
+                            </AdminRoute>
+                        }/>
+                        <Route end path="/admin/analytics" element={
+                            <AdminRoute>
+                                <Analytics />
+                            </AdminRoute>
+                        }/>
+                        <Route element={<ErrorPage />}/>
+                    </Routes>
                 </GlobalErrorBoundary>
 
                 <footer className="usa-footer usa-footer--slim">
@@ -161,7 +134,6 @@ export default class App extends Component {
                         </div>
                     </div>
                 </footer>
-            </Router>
-        </>);
+            </BrowserRouter>);
     }
 }

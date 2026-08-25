@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useEffect } from 'react';
-import { Route, Switch, useRouteMatch, NavLink, Link, Redirect } from 'react-router-dom';
+import { Route, Routes, useLocation, useResolvedPath, NavLink, Link, Navigate } from 'react-router';
 import { useDispatch } from 'react-redux';
 
 import { deletePattern, loadProfilePatterns } from './../../actions/patterns';
@@ -28,7 +28,8 @@ import ErrorBoundary from '../errors/ErrorBoundary';
 // this is very similar to statement template page
 export default function Patterns(props) {
     const dispatch = useDispatch();
-    const { path, url } = useRouteMatch();
+    const url = useResolvedPath("").pathname;
+    const path = useLocation().pathname;
     const { selectedProfileVersionId } = useSelector(state => state.application);
     let patterns = useSelector((state) => state.patterns);
 
@@ -44,15 +45,15 @@ export default function Patterns(props) {
 
     return (<>
         <ErrorBoundary errorType="patterns" />
-        <Switch>
-            <Route exact path={path}>
+        <Routes>
+            <Route end path={path} element={<>
                 <div className="grid-row">
                     <div className="desktop:grid-col">
                         <h2 style={{ marginBottom: 0 }}>Patterns</h2>
                     </div>
                     {props.isMember && props.isCurrentVersion &&
                         <div className="grid-col display-flex flex-column flex-align-end">
-                            <NavLink exact
+                            <NavLink end
                                 to={`${url}/add`}
                                 className="usa-button margin-top-2 margin-right-0">
                                 <i className="fa fa-plus margin-right-05"></i> <span> Add Pattern</span>
@@ -67,24 +68,18 @@ export default function Patterns(props) {
                         data={data}
                         emptyMessage="There are no patterns associated with this profile. Add a pattern to define relationships between your xAPI statements." />
                 </div>
-            </Route>
-            <Route exact path={`${path}/add`}>
-                {(props.isMember && props.isCurrentVersion) ?
-                    <AddPattern root_url={url} />
-                    : <Redirect to={url} />
-                }
-            </Route>
-            <Route path={`${path}/create`}>
-                {(props.isMember && props.isCurrentVersion) ?
-                    <CreatePattern {...props} root_url={url} />
-                    : <Redirect to={url} />
-                }
-            </Route>
-            <Route path={`${path}/:patternId`}>
-                <PatternDetail {...props} root_url={url} isOrphan={props.isOrphan} />
-            </Route>
-            {/* <Redirect from="/" to="" /> */}
-        </Switch>
+            </>}/>
+            <Route end path={`${path}/add`} element={(props.isMember && props.isCurrentVersion) ?
+                <AddPattern root_url={url} />
+                : <Navigate to={url} />
+            }/>
+            <Route path={`${path}/create`} element={(props.isMember && props.isCurrentVersion) ?
+                <CreatePattern {...props} root_url={url} />
+                : <Navigate to={url} />
+            }/>
+            <Route path={`${path}/:patternId`} element={<PatternDetail {...props} root_url={url} isOrphan={props.isOrphan} />}/>
+            {/* <Navigate from="/" to="" /> */}
+        </Routes>
     </>);
 }
 

@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useEffect, useState } from 'react';
-import { Switch, Route, NavLink, useParams, useRouteMatch, Link, useHistory } from 'react-router-dom';
+import { Routes, Route, NavLink, useParams, useLocation, useResolvedPath, Link, useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import jsDownload from 'js-file-download';
 import Lock from "../components/users/lock";
@@ -24,7 +24,6 @@ import Patterns from '../components/patterns/Patterns'
 import { selectProfile, selectProfileVersion, publishProfileVersion, createNewProfileDraft, 
     editProfileVersion, resolveProfile, requestVerification, deleteProfile, 
     deleteProfileDraft } from "../actions/profiles";
-import history from "../history";
 import CreateProfileForm from '../components/profiles/CreateProfileForm';
 import ProfileDetails from '../components/profiles/ProfileDetails';
 import ErrorPage from '../components/errors/ErrorPage';
@@ -47,9 +46,10 @@ import { verificationResponded } from '../actions/successAlert';
 import AccountButton from "../components/users/AccountButton"
 
 export default function Profile() {
-    let history = useHistory();
+    let navigate = useNavigate();
     const dispatch = useDispatch();
-    const { url, path } = useRouteMatch();
+    const url = useResolvedPath("").pathname;
+    const path = useLocation().pathname;
     const { organizationId, profileId, versionId } = useParams();
 
     const [publishConfirmation, showPublishConfirmation] = useState(false);
@@ -66,7 +66,7 @@ export default function Profile() {
     let [searchString, setSearchString] = useState();
 
     function search(e) {
-        history.push({ pathname: "/search", state: { search: searchString } });
+        navigate({ pathname: "/search", state: { search: searchString } });
         e.preventDefault();
         setSearchString("");
         return false;
@@ -148,19 +148,19 @@ export default function Profile() {
         } else {
             dispatch(editProfileVersion(values));
         }
-        history.push(url);
+        navigate(url);
     }
     function handleRequestVerification() {
         showPublishVerification(false);
         dispatch(requestVerification())
     }
     function handleCancelEditProfile() {
-        history.push(url);
+        navigate(url);
     }
 
     async function handleDeleteProfile() {
         await dispatch(deleteProfile(organizationId, profile));
-        history.push(`/`);
+        navigate(`/`);
         setTimeout(() => {
             window.location.reload();
         });
@@ -168,7 +168,7 @@ export default function Profile() {
 
     async function handleDeleteProfileDraft() {
         await dispatch(deleteProfileDraft(organizationId, profile));
-        history.push(`/`);
+        navigate(`/`);
         setTimeout(() => {
             window.location.reload();
         });
@@ -314,21 +314,21 @@ export default function Profile() {
                                 </button>
                                 <ul id="basic-nav-section-admin1" className="usa-nav__submenu" hidden>
                                     <li className="usa-nav__submenu-item">
-                                        <NavLink exact to="/admin/users"
+                                        <NavLink end to="/admin/users"
                                             className="usa-link"
                                         >
                                             Manage Users
                                         </NavLink>
                                     </li>
                                     <li className="usa-nav__submenu-item">
-                                        <NavLink exact to="/admin/verification"
+                                        <NavLink end to="/admin/verification"
                                             className="usa-link"
                                         >
                                             Verify Profiles
                                         </NavLink>
                                     </li>
                                     <li className="usa-nav__submenu-item">
-                                        <NavLink exact to="/admin/analytics"
+                                        <NavLink end to="/admin/analytics"
                                             className="usa-link"
                                         >
                                             Analytics
@@ -341,7 +341,7 @@ export default function Profile() {
                             <AccountButton controlIndex={1000}></AccountButton>
                         </li>
                         <li className={`usa-nav__primary-item `}>
-                            <NavLink exact
+                            <NavLink end
                                 to={`${url}`}
                                 className="usa-nav__link"
                                 activeClassName="usa-current">
@@ -404,44 +404,28 @@ export default function Profile() {
         </header>
         <main id="main-content" className="grid-container padding-bottom-4">
 
-            <Switch>
-                <Route exact path={path}>
-                    <ProfileDetails isMember={isMember} isCurrentVersion={isCurrentVersion} />
-                </Route>
-                <Route path={`${path}/templates`} >
-                    <Templates isMember={isMember} isCurrentVersion={isCurrentVersion} />
-                </Route>
-                <Route path={`${path}/patterns`} >
-                    <Patterns isMember={isMember} isCurrentVersion={isCurrentVersion} />
-                </Route>
-                <Route path={`${path}/concepts`} >
-                    <Concepts isMember={isMember} isCurrentVersion={isCurrentVersion} />
-                </Route>
-                <Route path={`${path}/edit`}>
-                    {(isMember && isCurrentVersion) ? <>
-                        <h2>Edit Profile Details</h2>
+            <Routes>
+                <Route end path={path} element={<ProfileDetails isMember={isMember} isCurrentVersion={isCurrentVersion} />}/>
+                <Route path={`${path}/templates`} element={<Templates isMember={isMember} isCurrentVersion={isCurrentVersion} />}/>
+                <Route path={`${path}/patterns`} element={<Patterns isMember={isMember} isCurrentVersion={isCurrentVersion} />}/>
+                <Route path={`${path}/concepts`} element={<Concepts isMember={isMember} isCurrentVersion={isCurrentVersion} />}/>
+                <Route path={`${path}/edit`} element={(isMember && isCurrentVersion) ? <>
+                    <h2>Edit Profile Details</h2>
 
-                        <Lock resourceUrl={`/org/${organization.uuid}/profile/${profile.uuid}/version/${profileVersion.uuid}`}>
-                            <CreateProfileForm
-                                handleSubmit={handleEditProfile}
-                                handleCancel={handleCancelEditProfile}
-                                handleDeleteProfile={handleDeleteProfile}
-                                handleDeleteProfileDraft={handleDeleteProfileDraft}
-                                initialValue={profileVersion}
-                            />
-                        </Lock> </>
-                        : <p>You do not have permissions to edit this profile. <a href={path} className="usa-link">Go Back</a></p>}
-                </Route>
-                <Route path={`${path}/import`}>
-                    <Import />
-                </Route>
-                <Route exact path={`${path}/queue`}>
-                    <ProfileImportQueue />
-                </Route>
-                <Route>
-                    <ErrorPage />
-                </Route>
-            </Switch>
+                    <Lock resourceUrl={`/org/${organization.uuid}/profile/${profile.uuid}/version/${profileVersion.uuid}`}>
+                        <CreateProfileForm
+                            handleSubmit={handleEditProfile}
+                            handleCancel={handleCancelEditProfile}
+                            handleDeleteProfile={handleDeleteProfile}
+                            handleDeleteProfileDraft={handleDeleteProfileDraft}
+                            initialValue={profileVersion}
+                        />
+                    </Lock> </>
+                    : <p>You do not have permissions to edit this profile. <a href={path} className="usa-link">Go Back</a></p>}/>
+                <Route path={`${path}/import`} element={<Import />}/>
+                <Route end path={`${path}/queue`} element={<ProfileImportQueue />}/>
+                <Route element={<ErrorPage />}/>
+            </Routes>
             <ModalBoxWithoutClose show={publishVerification}>
                 <div style={{ maxWidth: 550 }}>
                     <div className="grid-row">

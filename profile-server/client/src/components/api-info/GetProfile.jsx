@@ -14,24 +14,17 @@
 * limitations under the License.
 **************************************************************** */
 import React from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router';
 import GetManyProfiles from './GetManyProfiles';
 import GetProfileByIRI from './GetProfileByIRI';
 import GetSingleProfile from './GetSingleProfile';
 
 export default function GetProfile() {
-    const { path } = useRouteMatch()
     return (
-        <Switch>
-            <Route path={`${path}/single`}>
-                <GetSingleProfile />
-            </Route>
-            <Route path={`${path}/by-iri`}>
-                <GetProfileByIRI />
-            </Route>
-            <Route path={`${path}/many`}>
-                <GetManyProfiles />
-            </Route>
-        </Switch>
+        <Routes>
+            <Route path="/single" element={<GetSingleProfile />}/>
+            <Route path="/by-iri" element={<GetProfileByIRI />}/>
+            <Route path="/many" element={<GetManyProfiles />}/>
+        </Routes>
     )
 }

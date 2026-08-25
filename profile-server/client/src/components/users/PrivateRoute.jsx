@@ -15,7 +15,7 @@
 **************************************************************** */
 
 import React from 'react';
-import { Route, Redirect, } from 'react-router-dom';
+import { Route, Navigate, } from 'react-router';
 import { useSelector } from 'react-redux';
 
 export default function PrivateRoute({ component, ...rest }) {
@@ -35,7 +35,7 @@ export default function PrivateRoute({ component, ...rest }) {
     else
         return <Route {...rest} render={(props) => (
 
-            < Redirect to={{ pathname: '/user/login', originurl: props.location }} />
+            < Navigate to={{ pathname: '/auth/oidc', originurl: props.location }} />
         )
         } />
 }

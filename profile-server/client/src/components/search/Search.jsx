@@ -21,7 +21,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import ProfileResult from "./ProfileResult";
 import ConceptResult from "./ConceptResult";
-import { useHistory, useLocation, NavLink } from 'react-router-dom'
+import { useLocation, NavLink } from 'react-router'
 import Pagination from "./Pagination"
 import store from "../../store";
 import Flyout from "../controls/flyout";
@@ -44,7 +44,6 @@ export default function Search(props) {
     let [verified, setVerified] = useState(false);
     const [searchedString, setSearchedString] = useState(tmpSearch);
     const [page, setPage] = useState(0);
-    const history = useHistory()
 
     useEffect(() => {
         if(location.state.category){
@@ -294,21 +293,21 @@ export default function Search(props) {
                                 </button>
                                 <ul id="basic-nav-section-admin1" className="usa-nav__submenu" hidden>
                                     <li className="usa-nav__submenu-item">
-                                        <NavLink exact to="/admin/users"
+                                        <NavLink end to="/admin/users"
                                             className="usa-link"
                                         >
                                             Manage Users
                                         </NavLink>
                                     </li>
                                     <li className="usa-nav__submenu-item">
-                                        <NavLink exact to="/admin/verification"
+                                        <NavLink end to="/admin/verification"
                                             className="usa-link"
                                         >
                                             Verify Profiles
                                         </NavLink>
                                     </li>
                                     <li className="usa-nav__submenu-item">
-                                        <NavLink exact to="/admin/analytics"
+                                        <NavLink end to="/admin/analytics"
                                             className="usa-link"
                                         >
                                             Analytics

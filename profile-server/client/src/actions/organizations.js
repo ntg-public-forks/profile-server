@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import API from '../api';
-import history from '../history';
+import { useNavigate }  from 'react-router';
 import { added, created, edited, removed } from './successAlert';
 
 export const START_GET_ORG = 'START_GET_ORG';
@@ -105,7 +105,7 @@ export function deleteOrganization(orgId) {
         });
 
         dispatch(getOrganizations())
-        history.push('/')
+        useNavigate('/')
     };
 }
 
@@ -122,7 +122,7 @@ export function createOrganization(org) {
             dispatch(getOrganizations());
             dispatch(created(org.name))
 
-            history.push(`/organization/${neworg.uuid}`);
+            useNavigate(`/organization/${neworg.uuid}`);
         } catch (err) {
             dispatch({
                 type: ERROR_CREATE_ORG,

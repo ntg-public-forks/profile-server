@@ -14,13 +14,13 @@
 * limitations under the License.
 **************************************************************** */
 import React from 'react';
-import { Link, useRouteMatch } from 'react-router-dom';
+import { Link, useResolvedPath } from 'react-router';
 
 import ProfileTable from './ProfileTable';
 
 export default function Profiles({ profiles, isMember }) {
 
-    const { url } = useRouteMatch();
+    const url = useResolvedPath("").pathname;
 
     return (<>
         <div className="grid-row">

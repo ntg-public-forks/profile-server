@@ -15,7 +15,7 @@
 **************************************************************** */
 
 import React, { createContext, useContext, useState } from 'react';
-import { useParams, useRouteMatch, useHistory } from 'react-router-dom';
+import { useParams, useResolvedPath, useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 
 import getMatchTypeComponent from './GetMatchTypeComponent';
@@ -219,8 +219,8 @@ export default function ProfileImportQueue() {
     const profileId = useSelector(state => state.application.selectedProfileId);
     const selectedImportedFileIndex = useSelector(state => state.application.selectedImportedFileIndex);
     const { versionId } = useParams();
-    const { url } = useRouteMatch();
-    const history = useHistory();
+    const url = useResolvedPath("").pathname;
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const [fly, showFlyOut] = useState(false);
@@ -243,7 +243,7 @@ export default function ProfileImportQueue() {
 
     const onImportQueueDropDownChange = (index) => {
         (Number(index) === -1) ?
-            history.push(`/organization/${profileVersion.organization.uuid}/profile/${profileId}/version/${profileVersion.uuid}/import`) :
+            navigate(`/organization/${profileVersion.organization.uuid}/profile/${profileId}/version/${profileVersion.uuid}/import`) :
             dispatch({ type: 'UPDATED_IMPORTED_FILE_INDEX', index: Number(index) })
     }
 
@@ -289,7 +289,7 @@ export default function ProfileImportQueue() {
           dispatch(putHarvest(updateHarvest));
         } else {
           let path = `/organization/${profileVersion.organization.uuid}/profile/${profileId}/version/${profileVersion.uuid}/concepts/create/${harvestItem.model.type}`;
-          history.push({
+          navigate({
             pathname: path,
             state: { 
               concept: harvestItem,
@@ -349,7 +349,7 @@ export default function ProfileImportQueue() {
     
 
     return (
-        <ImportQueueContext.Provider value={{ profileId, profileVersion, versionId, selectedImportedFileIndex, url, history, onFlyOut, setCompareModal, addToProfile, createNewConcept }}>
+        <ImportQueueContext.Provider value={{ profileId, profileVersion, versionId, selectedImportedFileIndex, url, onFlyOut, setCompareModal, addToProfile, createNewConcept }}>
             {
                 (fly && infoPanelDetails.details) &&
                 <Flyout show={fly} onClose={() => onFlyOut(false, null, null)}>
@@ -446,7 +446,7 @@ export default function ProfileImportQueue() {
                             }
                         </>
                         :
-                        <EmptyList linkTo={() => history.push('./import')} />
+                        <EmptyList linkTo={() => navigate('./import')} />
                     }
                 </div>
             </div>

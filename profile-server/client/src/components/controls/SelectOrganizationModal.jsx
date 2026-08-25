@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useState , forward, forwardRef, useImperativeHandle} from 'react';
-import { useRouteMatch } from 'react-router-dom';
+import { useResolvedPath } from 'react-router';
 import { useSelector } from 'react-redux';
 
 import ModalBox from './modalBox';
@@ -22,7 +22,7 @@ import Organizations from '../../pages/Organizations';
 
 const SelectOrganizationModal = forwardRef(({ className, preventDefault, onConfirm }, ref) => {
     const [showModal, setShowModal] = useState(false);
-    const { url } = useRouteMatch();
+    const url = useResolvedPath("").pathname;
 
     const chosenOrg = null;
 

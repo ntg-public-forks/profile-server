@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 export default function ConceptResult({ result, type }) {
     let date = new Date(result.createdOn);
     date = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear()

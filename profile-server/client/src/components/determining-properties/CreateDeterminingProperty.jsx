@@ -15,7 +15,7 @@
 **************************************************************** */
 import React, { useState } from 'react';
 import { Formik } from 'formik';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router';
 
 import ChoosePropertyType from './ChoosePropertyType';
 import AddProperty from './AddProperty';
@@ -24,7 +24,7 @@ export default function CreateDeterminingProperty({ onDeterminingPropertyAdd, br
 
     const [step, setStep] = useState(1);
     const [propertyType, setPropertyType] = useState();
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const renderBreadcrumbs = () => {
         if (breadcrumbs) {
@@ -58,13 +58,13 @@ export default function CreateDeterminingProperty({ onDeterminingPropertyAdd, br
                             propertyType={propertyType}
                             onPropertyChange={propertyType => { checkConflict(propertyType, () => setPropertyType(propertyType), () => { setStep(1); resetForm() }) }}
                             setNextStep={() => { checkConflict(values.propertyType, () => setStep(2), () => setStep(1)) }}
-                            onCancel={() => history.goBack()}
+                            onCancel={() => navigate(-1)}
                         />
                     </div>
                     <div className={step !== 2 ? "display-none" : ""}>
                         <AddProperty
                             propertyType={propertyType}
-                            setPreviousStep={() => history.goBack()}
+                            setPreviousStep={() => navigate(-1)}
                             isOneConceptOnly={oneConceptOnly.includes(propertyType)}
                             handleSubmit={handleSubmit}
                         />

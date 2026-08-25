@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useState, useEffect } from 'react';
-// import Truncate from 'react-truncate';
+// import { Truncate } from '@re-dev/react-truncate';
 
 import { searchTemplates, clearTemplateResults } from "../../actions/templates";
 import { useSelector, useDispatch } from "react-redux";

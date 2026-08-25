@@ -16,14 +16,14 @@
 
 import React from "react";
 
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 
 const CardListItem = ({ ctaText, to, keyName, keyValue }) => {
     return (
 
           <div className="card-list-item">
             <NavLink
-              exact
+              end
               to={to}
               className="font-sans-md"
             >

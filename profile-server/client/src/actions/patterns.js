@@ -14,12 +14,10 @@
 * limitations under the License.
 **************************************************************** */
 import API from '../api';
-import history from '../history';
 import { created, deprecated, DEPRECATED, EDITED, edited } from './successAlert';
 
 import { CLEAR_TEMPLATE_RESULTS } from './templates';
 import { selectProfile, selectProfileVersion } from './profiles';
-
 
 export const SELECT_PATTERN = 'SELECT_PATTERN';
 

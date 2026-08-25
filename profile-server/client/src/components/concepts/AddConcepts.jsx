@@ -14,7 +14,7 @@
 * limitations under the License.
 **************************************************************** */
 import React, { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router';
 import { useSelector, useDispatch } from "react-redux";
 
 import { searchConcepts, selectConceptResult, deselectConceptResult, clearConceptResults, loadProfileConcepts } from "../../actions/concepts";
@@ -29,7 +29,7 @@ import { ADDED } from '../../actions/successAlert';
 
 
 export default function AddConcepts({ rootUrl, addToName, isOneConceptOnly }) {
-    const history = useHistory();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const conceptResults = useSelector((state) => state.searchResults.concepts)
@@ -54,7 +54,7 @@ export default function AddConcepts({ rootUrl, addToName, isOneConceptOnly }) {
             newProfileVersion.externalConcepts = [...newProfileVersion.externalConcepts, ...selectedResults];
             await dispatch(editProfileVersion(newProfileVersion, ADDED, 'Concept'));
             await dispatch(loadProfileConcepts(profileVersion.uuid));
-            history.push(rootUrl);
+            navigate(rootUrl);
         }
     }
 
@@ -88,7 +88,7 @@ export default function AddConcepts({ rootUrl, addToName, isOneConceptOnly }) {
 
         <div className="grid-row">
             <div className="grid-col">
-                <CancelButton className="usa-button usa-button--unstyled" type="button" style={{ paddingTop: ".8em" }} cancelAction={() => history.push(rootUrl)} />
+                <CancelButton className="usa-button usa-button--unstyled" type="button" style={{ paddingTop: ".8em" }} cancelAction={() => navigate(rootUrl)} />
             </div>
             <div className="grid-col">
                 <div className="pin-right">
